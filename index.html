@@ -240,54 +240,79 @@
       background: rgba(255,255,255,.05); border: 1px solid rgba(255,255,255,.04);
     }
     .msg {
-      max-width: min(54%, 460px);
-      padding: 6px 9px;
-      border-radius: 13px;
-      font-size: 13px;
-      line-height: 1.24;
+      max-width: min(50%, 420px);
+      padding: 5px 8px;
+      border-radius: 12px;
+      font-size: 12.5px;
+      line-height: 1.2;
       animation: fadeUp .18s ease;
       white-space: pre-wrap;
       word-break: break-word;
     }
     .msg.in {
       align-self:flex-start;
-      background: rgba(255,255,255,.055);
-      border: 1px solid rgba(255,255,255,.06);
-      border-bottom-left-radius: 7px;
+      background: rgba(20,27,39,.82);
+      border: 1px solid rgba(255,255,255,.05);
+      border-bottom-left-radius: 6px;
     }
     .msg.out {
       align-self:flex-end;
-      background: linear-gradient(135deg, rgba(98,212,255,.22), rgba(143,123,255,.2));
-      border: 1px solid rgba(98,212,255,.12);
-      border-bottom-right-radius: 7px;
+      background: linear-gradient(135deg, rgba(19,50,82,.94), rgba(24,89,141,.92));
+      border: 1px solid rgba(115,187,255,.12);
+      border-bottom-right-radius: 6px;
     }
     .msg-meta {
-      display:flex; justify-content:flex-end; gap:6px; margin-top: 4px; font-size: 10px; color: rgba(239,245,255,.62);
+      display:flex;
+      justify-content:flex-end;
+      gap:5px;
+      margin-top: 2px;
+      font-size: 9.5px;
+      line-height: 1;
+      color: rgba(239,245,255,.58);
     }
 
     .gift-bubble {
-      max-width: 244px;
+      max-width: 216px;
       padding: 0;
       overflow: hidden;
-      border-radius: 14px;
-      background: linear-gradient(180deg, rgba(255,255,255,.08), rgba(255,255,255,.04));
-      border: 1px solid rgba(255,255,255,.08);
+      border-radius: 12px;
+      background: linear-gradient(180deg, rgba(58,91,136,.92), rgba(46,73,121,.92));
+      border: 1px solid rgba(255,255,255,.06);
+      box-shadow: none;
     }
     .gift-top {
-      padding: 9px 10px;
+      padding: 12px 12px 10px;
       display:flex;
-      gap:9px;
+      gap:10px;
       align-items:center;
-      background: linear-gradient(135deg, rgba(98,212,255,.17), rgba(143,123,255,.17));
+      background: transparent;
     }
     .gift-icon {
-      width: 40px; height: 40px; border-radius: 13px; background: rgba(255,255,255,.18);
-      display:grid; place-items:center; font-size: 21px;
+      width: 40px;
+      height: 40px;
+      border-radius: 12px;
+      background: rgba(255,255,255,.14);
+      display:grid;
+      place-items:center;
+      font-size: 20px;
+      flex: 0 0 auto;
     }
-    .gift-body { padding: 8px 10px; }
-    .gift-name { font-size: 13px; font-weight: 900; }
-    .gift-price { color: var(--warn); font-size: 11px; margin-top: 2px; }
-    .gift-note { color: var(--muted); font-size: 11px; margin-top: 4px; }
+    .gift-body {
+      padding: 0 12px 10px 12px;
+    }
+    .gift-name {
+      font-size: 12.5px;
+      font-weight: 900;
+      line-height: 1.1;
+    }
+    .gift-price {
+      color: #ffd45a;
+      font-size: 10.5px;
+      margin-top: 2px;
+    }
+    .gift-note {
+      display: none;
+    }
 
     .composer {
       padding: 10px 12px 12px;
@@ -415,7 +440,7 @@
         </div>
       </div>
       <p class="muted" style="max-width:620px; line-height:1.55;">
-        Локальный мессенджер в одном HTML: компактный чат, Telegram-подобный список диалогов, AI-бот, Max-Vault, подарки и стеклянный интерфейс.
+        Локальный мессенджер в одном HTML: компактный чат, Telegram-подобный список диалогов, AI-бот, Max‑Vault, подарки и стеклянный интерфейс.
       </p>
       <div class="hero-grid">
         <div class="feature"><strong>Тоньше сообщения</strong><span class="muted">Пузырьки стали заметно компактнее, без жирных блоков.</span></div>
@@ -486,7 +511,7 @@
         <div class="rail-stack">
           <button class="rail-btn active" data-view="chats" title="Чаты">💬</button>
           <button class="rail-btn" data-view="contacts" title="Контакты">👤</button>
-          <button class="rail-btn" data-view="wallet" title="Max-Vault">✦</button>
+          <button class="rail-btn" data-view="wallet" title="Max‑Vault">✦</button>
           <button class="rail-btn" data-view="gifts" title="Подарки">🎁</button>
         </div>
         <div class="rail-stack">
@@ -657,7 +682,7 @@
         {
           id: 'channel-max', type: 'channel', name: 'MAX News', description: 'Канал • стиль, апдейты и релизы', avatar: '', ai: false,
           messages: [
-            { id: uid(), kind: 'text', direction: 'in', from: 'MAX News', text: 'Релиз: компактные сообщения, подарки и Max-Vault.', time: fmt(-180) }
+            { id: uid(), kind: 'text', direction: 'in', from: 'MAX News', text: 'Релиз: компактные сообщения, подарки и Max‑Vault.', time: fmt(-180) }
           ]
         },
         {
@@ -851,7 +876,7 @@
         chips.innerHTML = '';
         renderContactsList();
       } else if (view === 'wallet') {
-        sidebarTitle.textContent = 'Max-Vault';
+        sidebarTitle.textContent = 'Max‑Vault';
         sidebarSubtitle.textContent = 'Пакеты пополнения';
         secondaryActionBtn.textContent = '✦';
         chips.innerHTML = '';
@@ -931,7 +956,7 @@
       sidebarList.innerHTML = packs.map(pack => `
         <div class="pack" data-pack="${pack.amount}">
           <div>
-            <div class="title">${pack.amount} Max-Vault</div>
+            <div class="title">${pack.amount} Max‑Vault</div>
             <div class="subtitle">Пакет пополнения</div>
           </div>
           <div class="price">${pack.price}</div>
@@ -951,7 +976,7 @@
           <div class="gift-art">${g.icon}</div>
           <div>
             <div class="title">${esc(g.name)}</div>
-            <div class="subtitle">${g.price} Max-Vault • ${esc(g.note)}</div>
+            <div class="subtitle">${g.price} Max‑Vault • ${esc(g.note)}</div>
           </div>
         </div>
       `).join('');
@@ -988,18 +1013,13 @@
                 <div class="gift-icon">${msg.giftIcon}</div>
                 <div>
                   <div class="gift-name">${esc(msg.giftName)}</div>
-                  <div class="gift-price">${msg.giftPrice} Max-Vault</div>
+                  <div class="gift-price">${msg.giftPrice} Max‑Vault</div>
                 </div>
               </div>
               <div class="gift-body">
-                <div class="gift-note">Подарок оформлен компактной карточкой.</div>
-                <div class="msg-meta"><span>${esc(msg.from)}</span><span>${esc(msg.time)}</span></div>
+                <div class="msg-meta"><span>${esc(msg.time)}</span></div>
               </div>
-            </div>
-          `);
-        } else {
-          out.push(`
-            <div class="msg ${msg.direction}">
+     <div class="msg-meta"><span>${esc(msg.time)}</span></div>ss="msg ${msg.direction}">
               ${esc(msg.text)}
               <div class="msg-meta"><span>${esc(msg.from)}</span><span>${esc(msg.time)}</span></div>
             </div>
@@ -1050,27 +1070,27 @@
     function renderWalletView() {
       composerBlock.classList.add('hidden');
       modelWrap.classList.add('hidden');
-      paint(mainAvatar, 'Max-Vault', '');
-      mainName.textContent = 'Max-Vault';
+      paint(mainAvatar, 'Max‑Vault', '');
+      mainName.textContent = 'Max‑Vault';
       mainDesc.textContent = 'Покупка пакетов внутри интерфейса';
       const selected = state.wallet.selectedPack || 100;
       mainContent.innerHTML = `
         <div class="stack" style="max-width:760px;">
           <div class="panel-card">
-            <div class="wallet-balance"><span class="star">✦</span> ${state.wallet.balance} Max-Vault</div>
-            <div class="muted" style="margin-top:8px;">Выбран пакет: ${selected} Max-Vault</div>
+            <div class="wallet-balance"><span class="star">✦</span> ${state.wallet.balance} Max‑Vault</div>
+            <div class="muted" style="margin-top:8px;">Выбран пакет: ${selected} Max‑Vault</div>
           </div>
           <div class="panel-card stack">
             <div style="font-size:20px; font-weight:900;">Пополнение</div>
             <div class="notice">Выбери пакет слева и нажми оплатить. После короткой загрузки появится статус «Оплачено», а баланс обновится.</div>
-            <button class="btn" id="buyPackBtn">Оплатить ${selected} Max-Vault</button>
+            <button class="btn" id="buyPackBtn">Оплатить ${selected} Max‑Vault</button>
             <div id="payStatusLine" class="muted" style="font-size:13px; min-height:20px;"></div>
           </div>
           <div class="panel-card stack">
             <div style="font-size:18px; font-weight:900;">Пакеты</div>
-            <div class="pack"><div><div class="title">100 Max-Vault</div><div class="subtitle">Базовый пакет</div></div><div class="price">100 ₽</div></div>
-            <div class="pack"><div><div class="title">1000 Max-Vault</div><div class="subtitle">Средний пакет</div></div><div class="price">1000 ₽</div></div>
-            <div class="pack"><div><div class="title">5000 Max-Vault</div><div class="subtitle">Большой пакет</div></div><div class="price">5000 ₽</div></div>
+            <div class="pack"><div><div class="title">100 Max‑Vault</div><div class="subtitle">Базовый пакет</div></div><div class="price">100 ₽</div></div>
+            <div class="pack"><div><div class="title">1000 Max‑Vault</div><div class="subtitle">Средний пакет</div></div><div class="price">1000 ₽</div></div>
+            <div class="pack"><div><div class="title">5000 Max‑Vault</div><div class="subtitle">Большой пакет</div></div><div class="price">5000 ₽</div></div>
           </div>
         </div>
       `;
@@ -1086,7 +1106,7 @@
       const gift = state.gifts.find(g => g.id === state.ui.selectedGiftId) || state.gifts[0];
       paint(mainAvatar, gift.name, '');
       mainName.textContent = gift.name;
-      mainDesc.textContent = `${gift.price} Max-Vault • ${gift.note}`;
+      mainDesc.textContent = `${gift.price} Max‑Vault • ${gift.note}`;
       const options = state.chats.map(chat => `<option value="${chat.id}" ${state.ui.giftTargetId===chat.id?'selected':''}>${esc(chat.name)}</option>`).join('');
       mainContent.innerHTML = `
         <div class="stack" style="max-width:760px;">
@@ -1096,7 +1116,7 @@
               <div>
                 <div style="font-size:28px; font-weight:900; letter-spacing:-.04em;">${esc(gift.name)}</div>
                 <div class="muted" style="margin-top:6px;">${gift.note}</div>
-                <div class="gift-price" style="margin-top:8px;">${gift.price} Max-Vault</div>
+                <div class="gift-price" style="margin-top:8px;">${gift.price} Max‑Vault</div>
               </div>
             </div>
           </div>
@@ -1144,9 +1164,10 @@
       const cmd = text.toLowerCase().trim();
       if (cmd === '/start') return 'Бот запущен. Напиши /help, /menu, /ping или /profile';
       if (cmd === '/help') return 'Доступно: /start, /help, /menu, /ping, /profile';
-      if (cmd === '/menu') return 'Меню: 1) Чаты 2) Контакты 3) Max-Vault 4) Подарки';
+      if (cmd === '/menu') return 'Меню: 1) Чаты 2) Контакты 3) Max‑Vault 4) Подарки';
       if (cmd === '/ping') return 'pong';
-      if (cmd === '/profile') return `${state.profile.name} • ${state.profile.username}\n${state.profile.bio}`;
+      if (cmd === '/profile') return `${state.profile.name} • ${state.profile.username}
+${state.profile.bio}`;
       return 'Команда не найдена.';
     }
 
@@ -1195,7 +1216,7 @@
       const gift = state.gifts.find(g => g.id === state.ui.selectedGiftId) || state.gifts[0];
       const targetId = state.ui.giftTargetId || state.chats[0]?.id;
       if (!gift || !targetId) return;
-      if (state.wallet.balance < gift.price) return toast('Недостаточно Max-Vault.');
+      if (state.wallet.balance < gift.price) return toast('Недостаточно Max‑Vault.');
       state.wallet.balance -= gift.price;
       addGiftMessage(targetId, gift);
       state.ui.activeChatId = targetId;
