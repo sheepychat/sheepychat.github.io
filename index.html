@@ -998,36 +998,43 @@
       composerBlock.classList.remove('hidden');
       const chat = getActiveChat();
       if (!chat) return;
+
       paint(mainAvatar, chat.name, chat.avatar);
       mainName.textContent = chat.name;
       mainDesc.textContent = chat.description;
       modelWrap.classList.toggle('hidden', !chat.ai);
       if (chat.ai) modelSelect.value = chat.model || 'chatgpt 4o (free)';
 
-      const out = ['<div class="messages"><div class="day">Сегодня</div>'];
-      chat.messages.forEach(msg => {
+      const parts = ['<div class="messages"><div class="day">Сегодня</div>'];
+
+      for (const msg of chat.messages) {
         if (msg.kind === 'gift') {
-          out.push(`
+          parts.push(`
             <div class="msg ${msg.direction} gift-bubble">
               <div class="gift-top">
-                <div class="gift-icon">${msg.giftIcon}</div>
-                <div>
+                <div class="gift-icon">${esc(msg.giftIcon)}</div>
+                <div style="min-width:0;">
                   <div class="gift-name">${esc(msg.giftName)}</div>
-                  <div class="gift-price">${msg.giftPrice} Max‑Vault</div>
+                  <div class="gift-price">${esc(String(msg.giftPrice))} Max-Vault</div>
                 </div>
               </div>
               <div class="gift-body">
                 <div class="msg-meta"><span>${esc(msg.time)}</span></div>
               </div>
-     <div class="msg-meta"><span>${esc(msg.time)}</span></div>ss="msg ${msg.direction}">
-              ${esc(msg.text)}
-              <div class="msg-meta"><span>${esc(msg.from)}</span><span>${esc(msg.time)}</span></div>
+            </div>
+          `);
+        } else {
+          parts.push(`
+            <div class="msg ${msg.direction}">
+              <div>${esc(msg.text)}</div>
+              <div class="msg-meta"><span>${esc(msg.time)}</span></div>
             </div>
           `);
         }
-      });
-      out.push('</div>');
-      mainContent.innerHTML = out.join('');
+      }
+
+      parts.push('</div>');
+      mainContent.innerHTML = parts.join('');
       mainContent.scrollTop = mainContent.scrollHeight;
     }
 
