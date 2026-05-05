@@ -1,1423 +1,431 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
-  <title>MAX Flow Messenger</title>
-  <style>
-    :root {
-      --bg: #06101c;
-      --bg2: #0b1522;
-      --glass: ([docs.github.com](https://docs.github.com/en/enterprise-cloud%40latest/pages/getting-started-with-github-pages/what-is-github-pages?utm_source=chatgpt.com))14, 22, 36, 0.7);
-      --line: rgba(255,255,255,0.08);
-      --text: #eff5ff;
-      --muted: #97a9c7;
-      --accent: #62d4ff;
-      --accent2: #8f7bff;
-      --warn: #ffd46a;
-      --ok: #68dc9c;
-      --shadow: 0 18px 44px rgba(0,0,0,0.28);
-    }
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Bulldag Store</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+        }
 
-    * { box-sizing: border-box; margin: 0; padding: 0; }
-    html, body {
-      width: 100%;
-      height: 100%;
-      min-height: 100%;
-      overflow: hidden;
-      overscroll-behavior: none;
-      font-family: Inter, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-      color: var(--text);
-      background:
-        radial-gradient(circle at 8% 10%, rgba(98,212,255,.18), transparent 22%),
-        radial-gradient(circle at 90% 8%, rgba(143,123,255,.18), transparent 24%),
-        linear-gradient(160deg, #030913 0%, #08111d 48%, #040a14 100%);
-    }
-    body::before,
-    body::after {
-      content: "";
-      position: fixed;
-      width: 320px;
-      height: 320px;
-      border-radius: 50%;
-      filter: blur(84px);
-      opacity: .28;
-      pointer-events: none;
-      z-index: 0;
-      animation: floaty 10s ease-in-out infinite;
-    }
-    body::before { left: -90px; top: 8%; background: rgba(98,212,255,.38); }
-    body::after { right: -90px; bottom: -40px; background: rgba(143,123,255,.34); animation-delay: -4s; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background-color: #f2f2f2;
+            margin: 0;
+            padding: clamp(12px, 3vw, 25px);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
 
-    @keyframes floaty {
-      0%,100% { transform: translateY(0) scale(1); }
-      50% { transform: translateY(-14px) scale(1.06); }
-    }
-    @keyframes fadeUp {
-      from { opacity: 0; transform: translateY(10px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
-    @keyframes spin { to { transform: rotate(360deg); } }
+        .header {
+            display: flex;
+            align-items: center;
+            margin-bottom: clamp(15px, 4vw, 30px);
+            width: 100%;
+            justify-content: center;
+        }
 
-    .hidden { display: none !important; }
-    .screen { position: relative; z-index: 1; min-height: 100vh; }
-    .glass {
-      background: linear-gradient(180deg, rgba(22,31,49,.65), rgba(10,16,27,.78));
-      border: 1px solid var(--line);
-      box-shadow: var(--shadow);
-      backdrop-filter: blur(26px) saturate(1.16);
-      -webkit-backdrop-filter: blur(26px) saturate(1.16);
-    }
+        .header img {
+            width: clamp(45px, 12vw, 70px);
+            height: clamp(45px, 12vw, 70px);
+            margin-right: clamp(8px, 2vw, 15px);
+            border-radius: 16px;
+        }
 
-    .auth {
-      min-height: 100vh;
-      display: grid;
-      grid-template-columns: 1.04fr .96fr;
-      gap: 18px;
-      padding: 18px;
-    }
-    .hero, .auth-card { border-radius: 30px; }
-    .hero { padding: 28px; animation: fadeUp .5s ease; }
-    .auth-card { padding: 28px; display:flex; flex-direction:column; justify-content:center; animation: fadeUp .65s ease; }
-    .brand { display:flex; gap:14px; align-items:center; margin-bottom:24px; }
-    .logo {
-      width: 58px; height: 58px; border-radius: 20px; display:grid; place-items:center;
-      background: linear-gradient(135deg, var(--accent), var(--accent2));
-      color: #05111c; font-weight: 900; font-size: 24px;
-    }
-    h1 { font-size: clamp(32px, 4vw, 54px); line-height: .93; letter-spacing: -.05em; }
-    .muted { color: var(--muted); }
-    .hero-grid { margin-top: 22px; display:grid; grid-template-columns: repeat(2,1fr); gap: 12px; }
-    .feature {
-      padding: 14px; border-radius: 18px; background: rgba(255,255,255,.04); border: 1px solid rgba(255,255,255,.05);
-    }
-    .feature strong { display:block; margin-bottom: 6px; font-size: 14px; }
-    .preview { margin-top: 22px; padding: 14px; border-radius: 22px; background: rgba(255,255,255,.03); border: 1px solid rgba(255,255,255,.05); }
-    .mini-avatar { width: 40px; height: 40px; border-radius: 50%; background: linear-gradient(135deg, var(--accent), var(--accent2)); }
-    .mini-row { display:flex; gap:10px; align-items:center; }
-    .mini-line { height: 10px; border-radius: 999px; background: rgba(255,255,255,.06); margin-top: 8px; }
+        .header h1 {
+            font-size: clamp(22px, 6vw, 32px);
+            margin: 0;
+            color: #000;
+            font-weight: 800;
+        }
 
-    .tabs { display:inline-flex; padding:6px; gap:6px; border-radius:999px; background: rgba(255,255,255,.05); margin-bottom:18px; }
-    .tab { border:none; background:transparent; color:var(--muted); cursor:pointer; padding:10px 15px; border-radius:999px; font-weight:800; }
-    .tab.active { color: var(--text); background: linear-gradient(135deg, rgba(98,212,255,.18), rgba(143,123,255,.18)); }
-    .auth-title { font-size: 28px; letter-spacing: -.04em; margin-bottom: 8px; }
-    .form { display:grid; gap:12px; margin-top:16px; }
-    .row { display:grid; grid-template-columns: 1fr 1fr; gap:12px; }
-    .field label { display:block; margin-bottom:6px; font-size: 13px; color: var(--muted); }
-    input, textarea, select {
-      width: 100%;
-      padding: 13px 14px;
-      border-radius: 15px;
-      border: 1px solid rgba(255,255,255,.08);
-      outline: none;
-      background: rgba(255,255,255,.045);
-      color: var(--text);
-      font-size: 16px;
-      resize: none;
-    }
-    input:focus, textarea:focus, select:focus { border-color: rgba(98,212,255,.42); box-shadow: 0 0 0 4px rgba(98,212,255,.08); }
-    .btn {
-      border: none; cursor: pointer; padding: 13px 16px; border-radius: 15px; font-weight: 900;
-      background: linear-gradient(135deg, var(--accent), var(--accent2)); color: #05111c;
-      box-shadow: 0 12px 30px rgba(98,212,255,.18);
-    }
-    .btn.secondary {
-      color: var(--text); background: rgba(255,255,255,.06); box-shadow: none; border: 1px solid rgba(255,255,255,.06);
-    }
-    .status { min-height: 20px; font-size: 14px; color: var(--accent); }
-    .hint { color: var(--muted); font-size: 12px; line-height: 1.5; }
+        .search-bar {
+            width: 100%;
+            background-color: #000;
+            border-radius: clamp(14px, 4vw, 24px);
+            padding: clamp(10px, 2.5vw, 14px) clamp(16px, 4vw, 24px);
+            margin-bottom: clamp(18px, 5vw, 28px);
+        }
 
-    .app { padding: 10px; }
-    .shell {
-      height: calc(100dvh - 20px);
-      display: grid;
-      grid-template-columns: 78px 320px minmax(460px,1fr) 310px;
-      overflow: hidden;
-      border-radius: 28px;
-      animation: fadeUp .5s ease;
-    }
-    .rail, .sidebar, .main, .sidepanel { min-height: 0; }
-    .rail { border-right: 1px solid var(--line); background: rgba(8,12,20,.38); padding: 12px 10px; display:flex; flex-direction:column; justify-content:space-between; align-items:center; }
-    .rail-stack { display:flex; flex-direction:column; gap:10px; }
-    .rail-btn {
-      width: 54px; height: 54px; border-radius: 18px; display:grid; place-items:center; cursor:pointer;
-      border: 1px solid rgba(255,255,255,.06); background: rgba(255,255,255,.045); color: var(--text); font-size: 18px;
-    }
-    .rail-btn.active { background: linear-gradient(135deg, rgba(98,212,255,.16), rgba(143,123,255,.16)); border-color: rgba(98,212,255,.18); }
+        .search-bar input {
+            width: 100%;
+            background: transparent;
+            border: none;
+            color: #fff;
+            font-size: clamp(15px, 4vw, 19px);
+            outline: none;
+        }
+        
+        .search-bar input::placeholder {
+            color: #666;
+        }
 
-    .sidebar {
-      border-right: 1px solid var(--line);
-      background: linear-gradient(180deg, rgba(255,255,255,.075), rgba(255,255,255,.03));
-      padding: 10px 10px 8px;
-      display:flex;
-      flex-direction:column;
-      gap: 10px;
-      backdrop-filter: blur(26px) saturate(1.18);
-      -webkit-backdrop-filter: blur(26px) saturate(1.18);
-    }
-    .topline { display:flex; align-items:center; justify-content:space-between; gap:10px; padding: 0 2px; }
-    .topline h2 { font-size: 24px; letter-spacing: -.04em; }
-    .ghost, .icon-btn {
-      padding: 9px 11px; border-radius: 13px; cursor:pointer; color: var(--text);
-      border: 1px solid rgba(255,255,255,.06); background: rgba(255,255,255,.05);
-    }
-    .search { position: relative; }
-    .search input { padding-left: 40px; }
-    .sicon { position: absolute; left: 14px; top: 50%; transform: translateY(-50%); color: var(--muted); }
-    .chips { display:flex; gap:6px; overflow:auto; padding-bottom: 2px; }
-    .chip {
-      padding: 7px 10px; font-size: 12px; border-radius: 999px; cursor:pointer; white-space:nowrap;
-      background: rgba(255,255,255,.05); color: var(--muted); border: 1px solid rgba(255,255,255,.06);
-    }
-    .chip.active { color: var(--text); background: linear-gradient(135deg, rgba(98,212,255,.15), rgba(143,123,255,.15)); border-color: rgba(98,212,255,.18); }
-    .list {
-      min-height: 0;
-      overflow: auto;
-      display:grid;
-      gap: 2px;
-      overscroll-behavior: contain;
-      -webkit-overflow-scrolling: touch;
-    }
-    .item {
-      padding: 8px 9px;
-      border-radius: 14px;
-      display:grid;
-      grid-template-columns: 40px 1fr auto;
-      gap: 9px;
-      align-items:center;
-      cursor:pointer;
-      border: 1px solid transparent;
-      border-bottom: 1px solid rgba(255,255,255,.045);
-      background: transparent;
-      transition: background .16s ease, border-color .16s ease;
-    }
-    .item:hover, .item.active {
-      background: linear-gradient(135deg, rgba(255,255,255,.08), rgba(255,255,255,.035));
-      border-color: rgba(255,255,255,.06);
-    }
-    .avatar {
-      width: 40px; height: 40px; border-radius: 14px; display:grid; place-items:center; flex: 0 0 auto;
-      background: linear-gradient(135deg, rgba(98,212,255,.92), rgba(143,123,255,.95));
-      color: #06111c; font-weight: 900; background-size: cover; background-position: center;
-    }
-    .title { font-weight: 800; font-size: 13px; }
-    .subtitle { color: var(--muted); font-size: 11px; line-height: 1.28; margin-top: 2px; }
-    .pill { color: var(--accent); font-size: 10px; text-transform: uppercase; letter-spacing: .08em; }
+        .app-list {
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            gap: clamp(10px, 2.5vw, 16px);
+        }
 
-    .main {
-      display:grid;
-      grid-template-rows: auto 1fr auto;
-      background: rgba(255,255,255,.02);
-      min-height: 0;
-    }
-    .main-header {
-      padding: 11px 13px;
-      display:flex;
-      justify-content:space-between;
-      align-items:center;
-      gap: 10px;
-      border-bottom: 1px solid rgba(255,255,255,.05);
-      background: linear-gradient(180deg, rgba(255,255,255,.09), rgba(255,255,255,.03));
-      backdrop-filter: blur(28px) saturate(1.18);
-      -webkit-backdrop-filter: blur(28px) saturate(1.18);
-    }
-    .main-title { display:flex; gap:11px; align-items:center; min-width:0; }
-    .main-title .avatar { width: 42px; height: 42px; border-radius: 14px; }
-    .main-title h3 { font-size: 19px; letter-spacing: -.04em; }
-    .model-wrap { display:flex; gap:8px; align-items:center; flex-wrap:wrap; margin-top: 4px; }
-    .model-select { min-width: 220px; width: auto; padding: 8px 10px; border-radius: 12px; font-size: 12px; }
+        .app-item {
+            display: flex;
+            align-items: center;
+            background: white;
+            padding: clamp(10px, 2.5vw, 14px);
+            border-radius: clamp(12px, 3vw, 18px);
+            box-shadow: 0 2px 6px rgba(0,0,0,0.08);
+            transition: transform 0.1s;
+        }
+        
+        .app-item:active {
+            transform: scale(0.98);
+        }
 
-    .content {
-      min-height: 0;
-      overflow: auto;
-      padding: 12px 14px;
-      overscroll-behavior: contain;
-      -webkit-overflow-scrolling: touch;
-    }
-    .messages { display:flex; flex-direction:column; gap:6px; }
-    .day {
-      align-self:center; padding: 6px 11px; border-radius: 999px; font-size: 11px; color: var(--muted);
-      background: rgba(255,255,255,.05); border: 1px solid rgba(255,255,255,.04);
-    }
-    .msg {
-      max-width: min(50%, 420px);
-      padding: 5px 8px;
-      border-radius: 12px;
-      font-size: 12.5px;
-      line-height: 1.2;
-      animation: fadeUp .18s ease;
-      white-space: pre-wrap;
-      word-break: break-word;
-    }
-    .msg.in {
-      align-self:flex-start;
-      background: rgba(20,27,39,.82);
-      border: 1px solid rgba(255,255,255,.05);
-      border-bottom-left-radius: 6px;
-    }
-    .msg.out {
-      align-self:flex-end;
-      background: linear-gradient(135deg, rgba(19,50,82,.94), rgba(24,89,141,.92));
-      border: 1px solid rgba(115,187,255,.12);
-      border-bottom-right-radius: 6px;
-    }
-    .msg-meta {
-      display:flex;
-      justify-content:flex-end;
-      gap:5px;
-      margin-top: 2px;
-      font-size: 9.5px;
-      line-height: 1;
-      color: rgba(239,245,255,.58);
-    }
+        .app-icon {
+            width: clamp(50px, 13vw, 65px);
+            height: clamp(50px, 13vw, 65px);
+            border-radius: clamp(10px, 2.5vw, 14px);
+            margin-right: clamp(10px, 2.5vw, 15px);
+            object-fit: cover;
+            flex-shrink: 0;
+        }
 
-    .gift-bubble {
-      max-width: 216px;
-      padding: 0;
-      overflow: hidden;
-      border-radius: 12px;
-      background: linear-gradient(180deg, rgba(58,91,136,.92), rgba(46,73,121,.92));
-      border: 1px solid rgba(255,255,255,.06);
-      box-shadow: none;
-    }
-    .gift-top {
-      padding: 12px 12px 10px;
-      display:flex;
-      gap:10px;
-      align-items:center;
-      background: transparent;
-    }
-    .gift-icon {
-      width: 40px;
-      height: 40px;
-      border-radius: 12px;
-      background: rgba(255,255,255,.14);
-      display:grid;
-      place-items:center;
-      font-size: 20px;
-      flex: 0 0 auto;
-    }
-    .gift-body {
-      padding: 0 12px 10px 12px;
-    }
-    .gift-name {
-      font-size: 12.5px;
-      font-weight: 900;
-      line-height: 1.1;
-    }
-    .gift-price {
-      color: #ffd45a;
-      font-size: 10.5px;
-      margin-top: 2px;
-    }
-    .gift-note {
-      display: none;
-    }
+        .app-info {
+            flex-grow: 1;
+            min-width: 0;
+        }
 
-    .composer {
-      padding: 10px 12px 12px;
-      border-top: 1px solid rgba(255,255,255,.05);
-      background: linear-gradient(180deg, rgba(255,255,255,.08), rgba(255,255,255,.03));
-      backdrop-filter: blur(28px) saturate(1.18);
-      -webkit-backdrop-filter: blur(28px) saturate(1.18);
-    }
-    .composer-form {
-      display:grid;
-      grid-template-columns: auto 1fr auto auto;
-      gap: 7px;
-      align-items:center;
-      padding: 7px;
-      border-radius: 18px;
-      background: rgba(9,14,24,.56);
-      border: 1px solid rgba(255,255,255,.08);
-    }
-    .composer-form input {
-      border: none;
-      background: rgba(255,255,255,.025);
-      border-radius: 13px;
-      padding: 10px 12px;
-      min-height: 42px;
-      font-size: 16px;
-    }
-    .round {
-      width: 40px; height: 40px; display:grid; place-items:center; border-radius: 13px; cursor:pointer;
-      border: 1px solid rgba(255,255,255,.06); background: rgba(255,255,255,.045); color: var(--text);
-    }
-    .send {
-      width: 42px; height: 42px; border-radius: 13px; border:none; cursor:pointer; font-weight:900;
-      background: linear-gradient(135deg, var(--accent), var(--accent2)); color:#05111c;
-    }
+        .app-title {
+            font-weight: bold;
+            font-size: clamp(13px, 3.5vw, 16px);
+            margin-bottom: clamp(4px, 1vw, 6px);
+            display: block;
+            line-height: 1.2;
+            word-wrap: break-word;
+        }
 
-    .sidepanel {
-      border-left: 1px solid var(--line);
-      background: linear-gradient(180deg, rgba(255,255,255,.07), rgba(255,255,255,.03));
-      padding: 14px;
-      overflow: auto;
-      display:flex;
-      flex-direction:column;
-      gap: 12px;
-      backdrop-filter: blur(26px) saturate(1.18);
-      -webkit-backdrop-filter: blur(26px) saturate(1.18);
-    }
-    .panel-card, .profile-card {
-      border-radius: 20px; padding: 14px; background: rgba(255,255,255,.04); border: 1px solid rgba(255,255,255,.05);
-    }
-    .profile-card { text-align:center; }
-    .profile-card .avatar { width: 82px; height: 82px; border-radius: 24px; margin: 0 auto 12px; font-size: 26px; }
-    .stats { display:grid; grid-template-columns: repeat(3,1fr); gap: 8px; }
-    .stat { padding: 11px; border-radius: 16px; background: rgba(255,255,255,.04); text-align:center; }
-    .stat strong { display:block; margin-bottom:4px; font-size: 18px; }
-    .stack { display:grid; gap:10px; }
-    .wallet-balance { display:flex; gap:8px; align-items:center; font-size: 28px; font-weight: 900; letter-spacing: -.04em; }
-    .star { color: var(--warn); }
-    .pack {
-      padding: 12px; border-radius: 16px; display:flex; justify-content:space-between; align-items:center; gap:10px;
-      background: rgba(255,255,255,.04); border: 1px solid rgba(255,255,255,.05); cursor:pointer;
-    }
-    .price { color: var(--warn); font-weight: 900; }
-    .notice {
-      padding: 11px 12px; border-radius: 15px; background: rgba(255,255,255,.04); color: var(--muted); font-size: 13px; line-height: 1.42;
-    }
-    .gift-card {
-      padding: 10px; border-radius: 14px; display:flex; gap:10px; align-items:center; cursor:pointer;
-      background: rgba(255,255,255,.04); border: 1px solid rgba(255,255,255,.05);
-    }
-    .gift-card.active { background: linear-gradient(135deg, rgba(98,212,255,.09), rgba(143,123,255,.09)); border-color: rgba(98,212,255,.18); }
-    .gift-art {
-      width: 42px; height: 42px; border-radius: 13px; display:grid; place-items:center; font-size: 22px; background: rgba(255,255,255,.08);
-    }
-    .check {
-      width: 18px; height: 18px; border-radius: 50%; display:grid; place-items:center; font-size: 12px; font-weight: 900; background: var(--ok); color: #062113;
-    }
-    .spinner {
-      width: 16px; height: 16px; border-radius: 50%; border: 2px solid rgba(255,255,255,.2); border-top-color: var(--accent); animation: spin .75s linear infinite; display:inline-block;
-    }
-    .empty {
-      padding: 22px; text-align:center; border-radius: 16px; color: var(--muted); border: 1px dashed rgba(255,255,255,.08);
-    }
-    .modal-bg {
-      position: fixed; inset: 0; background: rgba(2,5,10,.6); display:grid; place-items:center; padding:18px; z-index: 30;
-    }
-    .modal { width: min(520px, 100%); border-radius: 28px; padding: 22px; }
-    .modal-grid { display:grid; gap:10px; margin-top: 16px; }
-    .modal-actions { display:flex; gap:10px; margin-top: 16px; }
+        .download-btn {
+            background-color: #39ff14;
+            color: black;
+            border: none;
+            padding: clamp(5px, 1.2vw, 7px) clamp(8px, 2vw, 11px);
+            border-radius: clamp(7px, 2vw, 10px);
+            font-weight: bold;
+            font-size: clamp(10px, 2.8vw, 13px);
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-block;
+            white-space: nowrap;
+        }
 
-    @media (min-width: 760px) {
-      input, textarea, select { font-size: 14px; }
-      .composer-form input { font-size: 14px; }
-    }
-    @media (max-width: 1280px) {
-      .shell { grid-template-columns: 78px 300px minmax(420px,1fr); }
-      .sidepanel { display:none; }
-    }
-    @media (max-width: 980px) {
-      .auth { grid-template-columns: 1fr; }
-      .shell { grid-template-columns: 72px 1fr; }
-      .main { min-height: 56vh; }
-    }
-    @media (max-width: 720px) {
-      .hero-grid, .row, .stats { grid-template-columns: 1fr; }
-      .app { padding: 0; }
-      .shell { display:flex; flex-direction:column; height: 100dvh; border-radius: 0; }
-      .rail { flex-direction:row; }
-      .rail-stack { flex-direction:row; }
-      .sidebar { min-height: 34vh; }
-      .main { flex: 1 1 auto; min-height: 0; }
-      .msg { max-width: 84%; }
-      .main-title h3 { font-size: 18px; }
-      .model-select { min-width: 170px; }
-    }
-  </style>
+        .platform {
+            font-weight: bold;
+            font-size: clamp(15px, 4vw, 20px);
+            margin-left: clamp(6px, 1.5vw, 12px);
+            flex-shrink: 0;
+            white-space: nowrap;
+        }
+
+        .app-item.hidden {
+            display: none !important;
+        }
+
+        .no-results {
+            text-align: center;
+            color: #888;
+            font-style: italic;
+            display: none;
+            padding: 30px 10px;
+            font-size: 14px;
+        }
+
+        /* Модальные окна */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            backdrop-filter: blur(5px);
+            -webkit-backdrop-filter: blur(5px);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+            padding: 15px;
+        }
+
+        .modal-content {
+            background: rgba(255, 255, 255, 0.96);
+            width: 100%;
+            max-width: 400px;
+            border-radius: clamp(18px, 5vw, 26px);
+            padding: clamp(18px, 5vw, 28px);
+            text-align: center;
+            position: relative;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.4);
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+
+        .modal-text {
+            font-weight: 800;
+            font-size: clamp(15px, 4.5vw, 20px);
+            margin-bottom: clamp(12px, 3vw, 18px);
+            line-height: 1.35;
+            color: #111;
+        }
+
+        .input-group {
+            margin-bottom: clamp(10px, 2.5vw, 14px);
+            text-align: left;
+        }
+
+        .input-label {
+            font-weight: bold;
+            font-size: clamp(13px, 3.5vw, 15px);
+            margin-bottom: 5px;
+            display: block;
+            color: #222;
+        }
+
+        .fake-input {
+            background: #eee;
+            padding: clamp(9px, 2vw, 12px);
+            border-radius: 10px;
+            font-size: clamp(12px, 3vw, 14px);
+            word-break: break-all;
+            border: 1px solid #ddd;
+            color: #333;
+        }
+
+        .blue-btn {
+            background-color: #0033cc;
+            color: white;
+            border: none;
+            padding: clamp(13px, 3.5vw, 17px);
+            width: 100%;
+            border-radius: clamp(12px, 3vw, 16px);
+            font-weight: 900;
+            font-size: clamp(12px, 3.2vw, 15px);
+            cursor: pointer;
+            margin-top: clamp(12px, 3vw, 18px);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            transition: opacity 0.2s;
+        }
+        
+        .blue-btn:active {
+            opacity: 0.9;
+        }
+
+        .footer-text {
+            margin-top: clamp(12px, 3vw, 18px);
+            font-size: clamp(9px, 2.2vw, 11px);
+            color: #777;
+            line-height: 1.4;
+        }
+
+        /* Мемный экран (ЫЫЫ) */
+        #modal2 .modal-content {
+            background: #000;
+            color: #fff;
+            font-size: clamp(50px, 14vw, 80px);
+            font-weight: 900;
+            padding: clamp(25px, 7vw, 40px);
+            animation: shake 0.4s ease-in-out infinite alternate;
+        }
+        
+        @keyframes shake {
+            from { transform: rotate(-1deg) translateX(-2px); }
+            to { transform: rotate(1deg) translateX(2px); }
+        }
+
+        #modal2 small {
+            font-size: clamp(10px, 2.5vw, 14px);
+            opacity: 0.6;
+            display: block;
+            margin-top: 20px;
+        }
+
+        .app-title {
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        
+        * {
+            -webkit-user-select: none;
+            user-select: none;
+        }
+        
+        input {
+            -webkit-user-select: auto;
+            user-select: auto;
+        }
+    </style>
 </head>
 <body>
-  <section id="authScreen" class="screen auth">
-    <div class="glass hero">
-      <div class="brand">
-        <div class="logo">M</div>
-        <div>
-          <div class="muted" style="font-size:13px; margin-bottom:4px;">GitHub-ready single file</div>
-          <h1>MAX Flow<br />Messenger</h1>
-        </div>
-      </div>
-      <p class="muted" style="max-width:620px; line-height:1.55;">
-        Локальный мессенджер в одном HTML: компактный чат, Telegram-подобный список диалогов, AI-бот, Max‑Vault, подарки и стеклянный интерфейс.
-      </p>
-      <div class="hero-grid">
-        <div class="feature"><strong>Тоньше сообщения</strong><span class="muted">Пузырьки стали заметно компактнее, без жирных блоков.</span></div>
-        <div class="feature"><strong>Чаты ближе к TG</strong><span class="muted">Список диалогов стал уже, легче и похожее на мессенджер.</span></div>
-        <div class="feature"><strong>iOS-like glass</strong><span class="muted">Тонкие стеклянные панели с мягким blur и светом.</span></div>
-        <div class="feature"><strong>GitHub Pages</strong><span class="muted">Подходит для публикации как статического проекта.</span></div>
-      </div>
-      <div class="preview">
-        <div class="mini-row">
-          <div class="mini-avatar"></div>
-          <div style="flex:1;">
-            <div class="mini-line" style="width:62%;"></div>
-            <div class="mini-line" style="width:40%;"></div>
-          </div>
-        </div>
-        <div class="mini-line" style="width:34%; height:28px; border-radius:12px; margin-top:12px;"></div>
-        <div class="mini-line" style="width:28%; height:28px; border-radius:12px; margin-top:8px; margin-left:auto;"></div>
-      </div>
+
+    <div class="header">
+        <img src="logo.png" alt="Logo" onerror="this.style.display='none'">
+        <h1>Bulldag Store</h1>
     </div>
 
-    <div class="glass auth-card">
-      <div class="tabs">
-        <button class="tab active" data-mode="login">Вход</button>
-        <button class="tab" data-mode="register">Регистрация</button>
-      </div>
-      <div class="auth-title">Добро пожаловать</div>
-      <div class="muted">Профиль и демо-данные сохраняются локально через localStorage.</div>
-
-      <form id="authForm" class="form">
-        <div class="row">
-          <div class="field">
-            <label>Имя</label>
-            <input id="authName" placeholder="Serega" required />
-          </div>
-          <div class="field">
-            <label>Юзернейм</label>
-            <input id="authUsername" placeholder="@serega" required />
-          </div>
-        </div>
-        <div class="field register-only hidden">
-          <label>Описание</label>
-          <textarea id="authBio" placeholder="Что-нибудь о себе"></textarea>
-        </div>
-        <div class="row register-only hidden">
-          <div class="field">
-            <label>Пароль</label>
-            <input id="regPassword" type="password" placeholder="Минимум 4 символа" />
-          </div>
-          <div class="field">
-            <label>Фото профиля</label>
-            <input id="authAvatar" type="file" accept="image/*" />
-          </div>
-        </div>
-        <div class="field login-only">
-          <label>Пароль</label>
-          <input id="loginPassword" type="password" placeholder="Твой пароль" />
-        </div>
-        <button class="btn" type="submit" id="authSubmit">Войти</button>
-        <div id="authStatus" class="status"></div>
-      </form>
-      <div class="hint">Подходит для публикации на GitHub Pages как index.html.</div>
+    <div class="search-bar">
+        <input type="text" id="searchInput" placeholder="Поиск.." oninput="filterApps()">
     </div>
-  </section>
 
-  <section id="appScreen" class="screen app hidden">
-    <div class="glass shell">
-      <aside class="rail">
-        <div class="rail-stack">
-          <button class="rail-btn active" data-view="chats" title="Чаты">💬</button>
-          <button class="rail-btn" data-view="contacts" title="Контакты">👤</button>
-          <button class="rail-btn" data-view="wallet" title="Max‑Vault">✦</button>
-          <button class="rail-btn" data-view="gifts" title="Подарки">🎁</button>
-        </div>
-        <div class="rail-stack">
-          <button class="rail-btn" id="openAddBtn" title="Добавить">＋</button>
-          <button class="rail-btn" id="logoutBtn" title="Выйти">⇦</button>
-        </div>
-      </aside>
+    <div id="noResults" class="no-results">Ничего не найдено...</div>
 
-      <aside class="sidebar">
-        <div class="topline">
-          <div>
-            <h2 id="sidebarTitle">Диалоги</h2>
-            <div class="muted" id="sidebarSubtitle" style="font-size:12px; margin-top:4px;">Чаты, каналы, группы и боты</div>
-          </div>
-          <button class="icon-btn" id="secondaryActionBtn">＋</button>
-        </div>
-        <div class="search">
-          <span class="sicon">⌕</span>
-          <input id="searchInput" placeholder="Поиск" />
-        </div>
-        <div class="chips" id="chips"></div>
-        <div class="list" id="sidebarList"></div>
-      </aside>
-
-      <main class="main">
-        <div class="main-header">
-          <div class="main-title">
-            <div class="avatar" id="mainAvatar">F</div>
-            <div style="min-width:0;">
-              <h3 id="mainName">Избранное</h3>
-              <div class="muted" id="mainDesc" style="font-size:12px; margin-top:2px;">Личные заметки и быстрые сообщения</div>
-              <div class="model-wrap hidden" id="modelWrap">
-                <span class="muted" style="font-size:12px;">Модель:</span>
-                <select id="modelSelect" class="model-select">
-                  <option>gemini 2 pro (free)</option>
-                  <option>gemini 3 pro</option>
-                  <option selected>chatgpt 4o (free)</option>
-                  <option>chatgpt 5.4</option>
-                </select>
-              </div>
+    <div class="app-list" id="appList">
+        
+        <!-- Half Life 2 -->
+        <div class="app-item" data-name="half-life 2 pc versions iphone hl2">
+            <img src="hl2.png" class="app-icon" alt="HL2" onerror="this.src='data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><rect fill=%22%23ddd%22 width=%22100%22 height=%22100%22/><text x=%2250%22 y=%2255%22 dominant-baseline=%22middle%22 text-anchor=%22middle%22 fill=%22%23666%22 font-size=%2240%22>λ</text></svg>'">
+            <div class="app-info">
+                <span class="app-title">half-life 2 (PC versions)</span>
+                <button class="download-btn" onclick="openModal1()">Скачать (10.57Gb)</button>
             </div>
-          </div>
-          <div style="display:flex; gap:8px;">
-            <button class="ghost" id="clearBtn">Очистить</button>
-            <button class="ghost" id="openGiftPickerBtn">Подарок</button>
-          </div>
+            <div class="platform">iPhone</div>
         </div>
 
-        <div class="content" id="mainContent"></div>
-
-        <div class="composer" id="composerBlock">
-          <form id="composerForm" class="composer-form">
-            <button type="button" class="round" id="toFavBtn">★</button>
-            <input id="messageInput" placeholder="Напиши сообщение или /start" autocomplete="off" />
-            <button type="button" class="round" id="emojiBtn">☺</button>
-            <button type="submit" class="send">➤</button>
-          </form>
-        </div>
-      </main>
-
-      <aside class="sidepanel">
-        <div class="profile-card">
-          <div class="avatar" id="profileAvatar">S</div>
-          <div style="font-size:22px; font-weight:900; letter-spacing:-.04em;" id="profileName">Serega</div>
-          <div class="muted" id="profileUsername" style="font-size:13px; margin-top:4px;">@serega</div>
-          <div class="muted" id="profileBio" style="font-size:13px; line-height:1.45; margin-top:10px;">Описание профиля</div>
+        <!-- Left 4 Dead -->
+        <div class="app-item" data-name="left-4dead l4d pc versions iphone left4dead">
+            <img src="l4d.png" class="app-icon" alt="L4D" onerror="this.style.background='#c00'">
+            <div class="app-info">
+                <span class="app-title">Left-4dead (pc versions)</span>
+                <button class="download-btn" onclick="openModal1()">Скачать (6.42Gb)</button>
+            </div>
+            <div class="platform">iPhone</div>
         </div>
 
-        <div class="panel-card">
-          <div class="stats">
-            <div class="stat"><strong id="statChats">0</strong><span class="muted" style="font-size:12px;">чатов</span></div>
-            <div class="stat"><strong id="statContacts">0</strong><span class="muted" style="font-size:12px;">контактов</span></div>
-            <div class="stat"><strong id="statVault">0</strong><span class="muted" style="font-size:12px;">vault</span></div>
-          </div>
+        <!-- Ayugram -->
+        <div class="app-item" data-name="ayugram telegram mod iphone tdesktop">
+            <img src="ayu.png" class="app-icon" alt="Ayu" onerror="this.style.background='#553388'">
+            <div class="app-info">
+                <span class="app-title">Ayugram (Telegram Mod)</span>
+                <button class="download-btn" onclick="openModal1()">Скачать (458.56Mb)</button>
+            </div>
+            <div class="platform">iPhone</div>
         </div>
 
-        <div class="panel-card stack">
-          <div style="font-size:18px; font-weight:900;">Профиль</div>
-          <input id="profileNameInput" placeholder="Имя" />
-          <input id="profileUsernameInput" placeholder="@username" />
-          <textarea id="profileBioInput" placeholder="Описание"></textarea>
-          <input id="profileAvatarInput" type="file" accept="image/*" />
-          <button class="btn" id="saveProfileBtn">Сохранить</button>
+        <!-- CS2 Injector -->
+        <div class="app-item" data-name="cs2 injector cheat crack pc counter-strike">
+            <img src="cs2.png" class="app-icon" alt="CS2" onerror="this.style.background='linear-gradient(135deg, #f39c12, #2980b9)'">
+            <div class="app-info">
+                <span class="app-title">CS2 injector Cheat (Crack 05.05.26)</span>
+                <button class="download-btn" onclick="goToTelegram()">Скачать (10.56Mb)</button>
+            </div>
+            <div class="platform">PC</div>
         </div>
 
-        <div class="panel-card stack">
-          <div style="font-size:18px; font-weight:900;">Команды</div>
-          <div class="notice">/start, /help, /menu, /ping, /profile</div>
-          <div class="notice">AI-бот отвечает сервисным сообщением в зависимости от выбранной модели.</div>
+        <!-- Dota2 Injector -->
+        <div class="app-item" data-name="dota2 injector crack pc dota defense ancients">
+            <img src="dota2.png" class="app-icon" alt="Dota2" onerror="this.style.background='linear-gradient(135deg, #cf6a2c, #8b0000)'">
+            <div class="app-info">
+                <span class="app-title">Dota2 injector (Crack 26.04.26)</span>
+                <button class="download-btn" onclick="goToTelegram()">Скачать (12.53Mb)</button>
+            </div>
+            <div class="platform">PC</div>
         </div>
-      </aside>
+
+        <!-- Dopamine -->
+        <div class="app-item" data-name="dopamine jailbreak ios iphone jailbreak">
+            <img src="dopamine.png" class="app-icon" alt="Dopamine" onerror="this.style.background='linear-gradient(135deg, #00b894, #0984e3)'">
+            <div class="app-info">
+                <span class="app-title">Dopamine Jailbreak (iOS 15-iOS 26.4)</span>
+                <button class="download-btn" onclick="openModal1()">Скачать (50.67Mb)</button>
+            </div>
+            <div class="platform">iPhone</div>
+        </div>
+
+        <!-- === MINECRAFT (НОВОЕ!) === -->
+        <div class="app-item" data-name="minecraft mine craft iphone sandbox voxel game java bedrock">
+            <img src="mine.png" class="app-icon" alt="Minecraft" onerror="this.style.background='linear-gradient(135deg, #6b4423, #7cb342)'">
+            <div class="app-info">
+                <span class="app-title">Minecraft 26.4</span>
+                <button class="download-btn" onclick="openModal1()">Скачать (756.78Mb)</button>
+            </div>
+            <div class="platform">iPhone</div>
+        </div>
+
     </div>
-  </section>
 
-  <div id="modalBg" class="modal-bg hidden">
-    <div class="glass modal">
-      <div id="modalTitle" style="font-size:26px; font-weight:900; letter-spacing:-.04em;">Добавить</div>
-      <div id="modalText" class="muted" style="margin-top:6px;">Новый объект</div>
-      <div id="modalFields" class="modal-grid"></div>
-      <div class="modal-actions">
-        <button class="btn" id="modalSaveBtn">Сохранить</button>
-        <button class="btn secondary" id="modalCloseBtn">Отмена</button>
-      </div>
+    <!-- МОДАЛЬНОЕ ОКНО 1 (iCloud) -->
+    <div id="modal1" class="modal-overlay" onclick="if(event.target===this)this.style.display='none'">
+        <div class="modal-content">
+            <div class="modal-text">
+                Чтоб скачать Приложение Вам нужно Войти в iCloud НЕ В APP STORE А в настройках
+            </div>
+            
+            <div class="input-group">
+                <span class="input-label">ICloud</span>
+                <div class="fake-input">omgfreeminecraft@kramail.con</div>
+            </div>
+
+            <div class="input-group">
+                <span class="input-label">Пароль</span>
+                <div class="fake-input">249292ajajaj*@okak</div>
+            </div>
+
+            <button class="blue-btn" onclick="document.getElementById('modal1').style.display='none'; document.getElementById('modal2').style.display='flex';">
+                ПЕРЕД ТЕМ КАК ВОЙТИ НАЖМИ НА МЕНЯ
+            </button>
+            
+            <div class="footer-text">
+                Мы сотрудничаем с Apple, Samsung, among us, Codex, OpenAI, rule34, SteamNoSkamRealno.net
+            </div>
+        </div>
     </div>
-  </div>
 
-  <script>
-    const STORAGE_KEY = 'max-flow-v3';
+    <!-- МОДАЛЬНОЕ ОКНО 2 (Мем) -->
+    <div id="modal2" class="modal-overlay" onclick="if(event.target===this)this.style.display='none'">
+        <div class="modal-content" ondblclick="this.parentElement.style.display='none'" ontouchend="setTimeout(()=>{this.parentElement.style.display='none'},300)">
+            <div>ЫЫЫ</div>
+            <div>ЫЫЫ</div>
+            <div>67</div>
+            <div>67</div>
+            <div>AAA</div>
+            <div>67</div>
+            <small>(нажми дважды для закрытия)</small>
+        </div>
+    </div>
 
-    const defaultState = {
-      authMode: 'login',
-      session: { loggedIn: false },
-      ui: {
-        view: 'chats',
-        activeChatId: 'fav',
-        activeContactId: 'contact-1',
-        search: '',
-        chatFilter: 'all',
-        selectedGiftId: 'gift-1',
-        giftTargetId: 'fav',
-        payBusy: false,
-        payDone: false
-      },
-      profile: {
-        name: 'Serega',
-        username: '@serega',
-        bio: 'Люблю красивые интерфейсы и быстрые заметки.',
-        password: '1234',
-        avatar: ''
-      },
-      wallet: {
-        balance: 260,
-        selectedPack: 100
-      },
-      contacts: [
-        { id: 'contact-1', name: 'Alexa', username: '@alexa', bio: 'UI designer', avatar: '' },
-        { id: 'contact-2', name: 'Maks', username: '@maks', bio: 'Backend dev', avatar: '' },
-        { id: 'contact-3', name: 'Lina', username: '@lina', bio: 'Artist', avatar: '' }
-      ],
-      gifts: [
-        { id: 'gift-1', name: 'Чебурашка', icon: '🧸', price: 50, note: 'Милый подарок' },
-        { id: 'gift-2', name: 'Мишка', icon: '🐻', price: 100, note: 'Тёплый подарок' },
-        { id: 'gift-3', name: 'Богатырь', icon: '🛡️', price: 500, note: 'Эпический подарок' },
-        { id: 'gift-4', name: 'Редкий NFT', icon: '💎', price: 1246, note: 'Коллекционный NFT-подарок' },
-        { id: 'gift-5', name: 'Office NFT', icon: '🏢', price: 15442, note: 'Легендарный NFT-подарок' }
-      ],
-      chats: [
-        {
-          id: 'fav', type: 'favorites', name: 'Избранное', description: 'Личные заметки и быстрые сообщения', avatar: '', ai: false,
-          messages: [
-            { id: uid(), kind: 'text', direction: 'in', from: 'system', text: 'Это твой личный чат. Сюда удобно сохранять заметки.', time: fmt(-80) },
-            { id: uid(), kind: 'text', direction: 'out', from: 'Вы', text: 'Нужно сделать всё тоньше и ближе к Telegram.', time: fmt(-75) }
-          ]
-        },
-        {
-          id: 'chat-alexa', type: 'chat', name: 'Alexa', description: '@alexa • online', avatar: '', ai: false,
-          messages: [
-            { id: uid(), kind: 'text', direction: 'in', from: 'Alexa', text: 'Теперь уже намного приятнее.', time: fmt(-120) }
-          ]
-        },
-        {
-          id: 'group-dev', type: 'group', name: 'Dev Club', description: 'Группа • 18 участников', avatar: '', ai: false,
-          messages: [
-            { id: uid(), kind: 'text', direction: 'in', from: 'Maks', text: 'Покажешь демо вечером?', time: fmt(-150) },
-            { id: uid(), kind: 'text', direction: 'out', from: 'Вы', text: 'Да, уже почти готово.', time: fmt(-145) }
-          ]
-        },
-        {
-          id: 'channel-max', type: 'channel', name: 'MAX News', description: 'Канал • стиль, апдейты и релизы', avatar: '', ai: false,
-          messages: [
-            { id: uid(), kind: 'text', direction: 'in', from: 'MAX News', text: 'Релиз: компактные сообщения, подарки и Max‑Vault.', time: fmt(-180) }
-          ]
-        },
-        {
-          id: 'bot-ai', type: 'bot', name: 'Gemini x ChatGPT', description: '@gemini_x_chatgpt_bot', avatar: '', ai: true, model: 'chatgpt 4o (free)',
-          messages: [
-            { id: uid(), kind: 'text', direction: 'in', from: 'Gemini x ChatGPT', text: 'Выбери модель рядом с именем и отправь сообщение.', time: fmt(-200) }
-          ]
+    <script>
+        function filterApps() {
+            const searchText = document.getElementById('searchInput').value.toLowerCase().trim();
+            const items = document.querySelectorAll('.app-item');
+            let found = 0;
+
+            items.forEach(item => {
+                const name = item.getAttribute('data-name').toLowerCase();
+                if (name.includes(searchText)) {
+                    item.classList.remove('hidden');
+                    found++;
+                } else {
+                    item.classList.add('hidden');
+                }
+            });
+
+            document.getElementById('noResults').style.display = 
+                (found === 0 && searchText.length > 0) ? 'block' : 'none';
         }
-      ]
-    };
 
-    let state = loadState();
-    let pendingAuthAvatar = null;
-    let pendingProfileAvatar = null;
-    let modalMode = null;
-
-    const authScreen = document.getElementById('authScreen');
-    const appScreen = document.getElementById('appScreen');
-    const tabs = [...document.querySelectorAll('.tab')];
-    const registerOnly = [...document.querySelectorAll('.register-only')];
-    const loginOnly = [...document.querySelectorAll('.login-only')];
-    const authForm = document.getElementById('authForm');
-    const authStatus = document.getElementById('authStatus');
-    const authSubmit = document.getElementById('authSubmit');
-
-    const railBtns = [...document.querySelectorAll('.rail-btn[data-view]')];
-    const sidebarTitle = document.getElementById('sidebarTitle');
-    const sidebarSubtitle = document.getElementById('sidebarSubtitle');
-    const searchInput = document.getElementById('searchInput');
-    const chips = document.getElementById('chips');
-    const sidebarList = document.getElementById('sidebarList');
-    const secondaryActionBtn = document.getElementById('secondaryActionBtn');
-    const logoutBtn = document.getElementById('logoutBtn');
-
-    const mainAvatar = document.getElementById('mainAvatar');
-    const mainName = document.getElementById('mainName');
-    const mainDesc = document.getElementById('mainDesc');
-    const modelWrap = document.getElementById('modelWrap');
-    const modelSelect = document.getElementById('modelSelect');
-    const mainContent = document.getElementById('mainContent');
-    const composerBlock = document.getElementById('composerBlock');
-    const composerForm = document.getElementById('composerForm');
-    const messageInput = document.getElementById('messageInput');
-    const emojiBtn = document.getElementById('emojiBtn');
-    const toFavBtn = document.getElementById('toFavBtn');
-    const clearBtn = document.getElementById('clearBtn');
-    const openGiftPickerBtn = document.getElementById('openGiftPickerBtn');
-
-    const profileAvatar = document.getElementById('profileAvatar');
-    const profileName = document.getElementById('profileName');
-    const profileUsername = document.getElementById('profileUsername');
-    const profileBio = document.getElementById('profileBio');
-    const profileNameInput = document.getElementById('profileNameInput');
-    const profileUsernameInput = document.getElementById('profileUsernameInput');
-    const profileBioInput = document.getElementById('profileBioInput');
-    const profileAvatarInput = document.getElementById('profileAvatarInput');
-    const saveProfileBtn = document.getElementById('saveProfileBtn');
-    const statChats = document.getElementById('statChats');
-    const statContacts = document.getElementById('statContacts');
-    const statVault = document.getElementById('statVault');
-
-    const openAddBtn = document.getElementById('openAddBtn');
-    const modalBg = document.getElementById('modalBg');
-    const modalTitle = document.getElementById('modalTitle');
-    const modalText = document.getElementById('modalText');
-    const modalFields = document.getElementById('modalFields');
-    const modalSaveBtn = document.getElementById('modalSaveBtn');
-    const modalCloseBtn = document.getElementById('modalCloseBtn');
-
-    init();
-
-    function init() {
-      applyAuthMode(state.authMode || 'login');
-      bind();
-      route();
-    }
-
-    function bind() {
-      tabs.forEach(tab => tab.addEventListener('click', () => applyAuthMode(tab.dataset.mode)));
-      document.getElementById('authAvatar').addEventListener('change', async e => pendingAuthAvatar = await fileToDataUrl(e.target.files?.[0]));
-      profileAvatarInput.addEventListener('change', async e => pendingProfileAvatar = await fileToDataUrl(e.target.files?.[0]));
-      authForm.addEventListener('submit', handleAuth);
-
-      railBtns.forEach(btn => btn.addEventListener('click', () => {
-        state.ui.view = btn.dataset.view;
-        state.ui.search = '';
-        persist();
-        renderAll();
-      }));
-      logoutBtn.addEventListener('click', () => { state.session.loggedIn = false; persist(); route(); });
-      searchInput.addEventListener('input', e => { state.ui.search = e.target.value.toLowerCase().trim(); persist(); renderSidebar(); });
-      secondaryActionBtn.addEventListener('click', handleSecondaryAction);
-      openAddBtn.addEventListener('click', handleSecondaryAction);
-
-      composerForm.addEventListener('submit', e => { e.preventDefault(); sendMessage(); });
-      emojiBtn.addEventListener('click', () => { messageInput.value += ' ✨'; messageInput.focus(); });
-      toFavBtn.addEventListener('click', () => {
-        const text = messageInput.value.trim();
-        if (!text) return toast('Сначала напиши текст.');
-        addTextMessage('fav', text, 'out');
-        state.ui.activeChatId = 'fav';
-        messageInput.value = '';
-        persist();
-        renderAll();
-      });
-      clearBtn.addEventListener('click', clearCurrent);
-      openGiftPickerBtn.addEventListener('click', () => { state.ui.view = 'gifts'; persist(); renderAll(); });
-      modelSelect.addEventListener('change', () => {
-        const chat = getActiveChat();
-        if (chat?.ai) { chat.model = modelSelect.value; persist(); }
-      });
-
-      saveProfileBtn.addEventListener('click', saveProfile);
-      modalCloseBtn.addEventListener('click', closeModal);
-      modalBg.addEventListener('click', e => { if (e.target === modalBg) closeModal(); });
-      modalSaveBtn.addEventListener('click', submitModal);
-    }
-
-    function applyAuthMode(mode) {
-      state.authMode = mode;
-      tabs.forEach(tab => tab.classList.toggle('active', tab.dataset.mode === mode));
-      registerOnly.forEach(el => el.classList.toggle('hidden', mode !== 'register'));
-      loginOnly.forEach(el => el.classList.toggle('hidden', mode !== 'login'));
-      authSubmit.textContent = mode === 'register' ? 'Создать профиль' : 'Войти';
-      authStatus.textContent = '';
-      persist();
-    }
-
-    function handleAuth(e) {
-      e.preventDefault();
-      const name = document.getElementById('authName').value.trim();
-      const usernameRaw = document.getElementById('authUsername').value.trim();
-      const username = usernameRaw.startsWith('@') ? usernameRaw : '@' + usernameRaw;
-      const bio = document.getElementById('authBio').value.trim();
-      const regPassword = document.getElementById('regPassword').value.trim();
-      const loginPassword = document.getElementById('loginPassword').value.trim();
-
-      if (!name || !usernameRaw) return setStatus('Заполни имя и юзернейм.');
-
-      if (state.authMode === 'register') {
-        if (regPassword.length < 4) return setStatus('Пароль минимум 4 символа.');
-        state.profile = { ...state.profile, name, username, bio: bio || 'Новый пользователь MAX Flow.', password: regPassword, avatar: pendingAuthAvatar || state.profile.avatar };
-        state.session.loggedIn = true;
-        setStatus('Профиль создан.');
-      } else {
-        if (loginPassword !== state.profile.password) return setStatus('Неверный пароль.');
-        state.profile.name = name;
-        state.profile.username = username;
-        state.session.loggedIn = true;
-        setStatus('Вход выполнен.');
-      }
-      persist();
-      setTimeout(route, 220);
-    }
-
-    function route() {
-      const logged = state.session.loggedIn;
-      authScreen.classList.toggle('hidden', logged);
-      appScreen.classList.toggle('hidden', !logged);
-      if (logged) renderAll();
-      else {
-        document.getElementById('authName').value = state.profile.name;
-        document.getElementById('authUsername').value = state.profile.username;
-        document.getElementById('authBio').value = state.profile.bio;
-      }
-    }
-
-    function renderAll() {
-      ensureRefs();
-      railBtns.forEach(btn => btn.classList.toggle('active', btn.dataset.view === state.ui.view));
-      renderSidebar();
-      renderMain();
-      renderProfile();
-      renderStats();
-    }
-
-    function renderSidebar() {
-      searchInput.value = state.ui.search || '';
-      const view = state.ui.view;
-
-      if (view === 'chats') {
-        sidebarTitle.textContent = 'Диалоги';
-        sidebarSubtitle.textContent = 'Чаты, каналы, группы и боты';
-        secondaryActionBtn.textContent = '＋';
-        renderChatChips();
-        renderChatList();
-      } else if (view === 'contacts') {
-        sidebarTitle.textContent = 'Контакты';
-        sidebarSubtitle.textContent = 'Люди и быстрые переходы в чат';
-        secondaryActionBtn.textContent = '＋';
-        chips.innerHTML = '';
-        renderContactsList();
-      } else if (view === 'wallet') {
-        sidebarTitle.textContent = 'Max‑Vault';
-        sidebarSubtitle.textContent = 'Пакеты пополнения';
-        secondaryActionBtn.textContent = '✦';
-        chips.innerHTML = '';
-        renderWalletSidebar();
-      } else if (view === 'gifts') {
-        sidebarTitle.textContent = 'Подарки';
-        sidebarSubtitle.textContent = 'Выбери подарок и чат';
-        secondaryActionBtn.textContent = '🎁';
-        chips.innerHTML = '';
-        renderGiftSidebar();
-      }
-    }
-
-    function renderChatChips() {
-      const defs = [['all','Все'], ['chat','Чаты'], ['group','Группы'], ['channel','Каналы'], ['bot','Боты'], ['favorites','Избранное']];
-      chips.innerHTML = defs.map(([v,l]) => `<button class="chip ${state.ui.chatFilter===v?'active':''}" data-chip="${v}">${l}</button>`).join('');
-      [...chips.querySelectorAll('[data-chip]')].forEach(btn => btn.addEventListener('click', () => {
-        state.ui.chatFilter = btn.dataset.chip;
-        persist();
-        renderSidebar();
-      }));
-    }
-
-    function renderChatList() {
-      const q = state.ui.search || '';
-      const filter = state.ui.chatFilter || 'all';
-      const list = state.chats.filter(chat => {
-        const typeOk = filter === 'all' || chat.type === filter;
-        const searchOk = !q || `${chat.name} ${chat.description} ${chat.type}`.toLowerCase().includes(q);
-        return typeOk && searchOk;
-      });
-      if (!list.length) return sidebarList.innerHTML = '<div class="empty">Ничего не найдено.</div>';
-      sidebarList.innerHTML = list.map(chat => `
-        <div class="item ${chat.id===state.ui.activeChatId?'active':''}" data-chat="${chat.id}">
-          <div class="avatar" style="${avatarStyle(chat.avatar)}">${initials(chat.name)}</div>
-          <div>
-            <div class="title">${esc(chat.name)}</div>
-            <div class="subtitle">${esc(lastText(chat))}</div>
-          </div>
-          <div class="pill">${chat.ai ? 'ai' : labelType(chat.type)}</div>
-        </div>
-      `).join('');
-      [...sidebarList.querySelectorAll('[data-chat]')].forEach(el => el.addEventListener('click', () => {
-        state.ui.activeChatId = el.dataset.chat;
-        persist();
-        renderMain();
-      }));
-    }
-
-    function renderContactsList() {
-      const q = state.ui.search || '';
-      const list = state.contacts.filter(c => !q || `${c.name} ${c.username} ${c.bio}`.toLowerCase().includes(q));
-      if (!list.length) return sidebarList.innerHTML = '<div class="empty">Контакты не найдены.</div>';
-      sidebarList.innerHTML = list.map(c => `
-        <div class="item ${c.id===state.ui.activeContactId?'active':''}" data-contact="${c.id}">
-          <div class="avatar" style="${avatarStyle(c.avatar)}">${initials(c.name)}</div>
-          <div>
-            <div class="title">${esc(c.name)}</div>
-            <div class="subtitle">${esc(c.username)} • ${esc(c.bio)}</div>
-          </div>
-          <div class="pill">contact</div>
-        </div>
-      `).join('');
-      [...sidebarList.querySelectorAll('[data-contact]')].forEach(el => el.addEventListener('click', () => {
-        state.ui.activeContactId = el.dataset.contact;
-        persist();
-        renderMain();
-      }));
-    }
-
-    function renderWalletSidebar() {
-      const packs = [
-        { amount:100, price:'100 ₽' },
-        { amount:1000, price:'1000 ₽' },
-        { amount:5000, price:'5000 ₽' }
-      ];
-      sidebarList.innerHTML = packs.map(pack => `
-        <div class="pack" data-pack="${pack.amount}">
-          <div>
-            <div class="title">${pack.amount} Max‑Vault</div>
-            <div class="subtitle">Пакет пополнения</div>
-          </div>
-          <div class="price">${pack.price}</div>
-        </div>
-      `).join('');
-      [...sidebarList.querySelectorAll('[data-pack]')].forEach(el => el.addEventListener('click', () => {
-        state.wallet.selectedPack = Number(el.dataset.pack);
-        state.ui.payDone = false;
-        persist();
-        renderMain();
-      }));
-    }
-
-    function renderGiftSidebar() {
-      sidebarList.innerHTML = state.gifts.map(g => `
-        <div class="gift-card ${g.id===state.ui.selectedGiftId?'active':''}" data-gift="${g.id}">
-          <div class="gift-art">${g.icon}</div>
-          <div>
-            <div class="title">${esc(g.name)}</div>
-            <div class="subtitle">${g.price} Max‑Vault • ${esc(g.note)}</div>
-          </div>
-        </div>
-      `).join('');
-      [...sidebarList.querySelectorAll('[data-gift]')].forEach(el => el.addEventListener('click', () => {
-        state.ui.selectedGiftId = el.dataset.gift;
-        persist();
-        renderMain();
-      }));
-    }
-
-    function renderMain() {
-      if (state.ui.view === 'chats') return renderChatView();
-      if (state.ui.view === 'contacts') return renderContactView();
-      if (state.ui.view === 'wallet') return renderWalletView();
-      if (state.ui.view === 'gifts') return renderGiftsView();
-    }
-
-    function renderChatView() {
-      composerBlock.classList.remove('hidden');
-      const chat = getActiveChat();
-      if (!chat) return;
-
-      paint(mainAvatar, chat.name, chat.avatar);
-      mainName.textContent = chat.name;
-      mainDesc.textContent = chat.description;
-      modelWrap.classList.toggle('hidden', !chat.ai);
-      if (chat.ai) modelSelect.value = chat.model || 'chatgpt 4o (free)';
-
-      const parts = ['<div class="messages"><div class="day">Сегодня</div>'];
-
-      for (const msg of chat.messages) {
-        if (msg.kind === 'gift') {
-          parts.push(`
-            <div class="msg ${msg.direction} gift-bubble">
-              <div class="gift-top">
-                <div class="gift-icon">${esc(msg.giftIcon)}</div>
-                <div style="min-width:0;">
-                  <div class="gift-name">${esc(msg.giftName)}</div>
-                  <div class="gift-price">${esc(String(msg.giftPrice))} Max-Vault</div>
-                </div>
-              </div>
-              <div class="gift-body">
-                <div class="msg-meta"><span>${esc(msg.time)}</span></div>
-              </div>
-            </div>
-          `);
-        } else {
-          parts.push(`
-            <div class="msg ${msg.direction}">
-              <div>${esc(msg.text)}</div>
-              <div class="msg-meta"><span>${esc(msg.time)}</span></div>
-            </div>
-          `);
-        }
-      }
-
-      parts.push('</div>');
-      mainContent.innerHTML = parts.join('');
-      mainContent.scrollTop = mainContent.scrollHeight;
-    }
-
-    function renderContactView() {
-      composerBlock.classList.add('hidden');
-      modelWrap.classList.add('hidden');
-      const c = state.contacts.find(x => x.id === state.ui.activeContactId) || state.contacts[0];
-      if (!c) return;
-      paint(mainAvatar, c.name, c.avatar);
-      mainName.textContent = c.name;
-      mainDesc.textContent = c.username;
-      mainContent.innerHTML = `
-        <div class="stack" style="max-width:720px;">
-          <div class="panel-card">
-            <div style="display:flex; gap:14px; align-items:center;">
-              <div class="avatar" style="width:68px; height:68px; border-radius:20px; ${avatarStyle(c.avatar)}">${initials(c.name)}</div>
-              <div>
-                <div style="font-size:28px; font-weight:900; letter-spacing:-.04em;">${esc(c.name)}</div>
-                <div class="muted" style="margin-top:4px;">${esc(c.username)}</div>
-              </div>
-            </div>
-            <div class="notice" style="margin-top:14px;">${esc(c.bio || 'Без описания')}</div>
-            <div style="display:flex; gap:10px; margin-top:14px; flex-wrap:wrap;">
-              <button class="btn" id="openChatWithContactBtn">Открыть чат</button>
-              <button class="btn secondary" id="sendGiftToContactBtn">Отправить подарок</button>
-            </div>
-          </div>
-        </div>
-      `;
-      document.getElementById('openChatWithContactBtn').addEventListener('click', () => openChatFromContact(c));
-      document.getElementById('sendGiftToContactBtn').addEventListener('click', () => {
-        const chatId = openChatFromContact(c, false);
-        state.ui.giftTargetId = chatId;
-        state.ui.view = 'gifts';
-        persist();
-        renderAll();
-      });
-    }
-
-    function renderWalletView() {
-      composerBlock.classList.add('hidden');
-      modelWrap.classList.add('hidden');
-      paint(mainAvatar, 'Max‑Vault', '');
-      mainName.textContent = 'Max‑Vault';
-      mainDesc.textContent = 'Покупка пакетов внутри интерфейса';
-      const selected = state.wallet.selectedPack || 100;
-      mainContent.innerHTML = `
-        <div class="stack" style="max-width:760px;">
-          <div class="panel-card">
-            <div class="wallet-balance"><span class="star">✦</span> ${state.wallet.balance} Max‑Vault</div>
-            <div class="muted" style="margin-top:8px;">Выбран пакет: ${selected} Max‑Vault</div>
-          </div>
-          <div class="panel-card stack">
-            <div style="font-size:20px; font-weight:900;">Пополнение</div>
-            <div class="notice">Выбери пакет слева и нажми оплатить. После короткой загрузки появится статус «Оплачено», а баланс обновится.</div>
-            <button class="btn" id="buyPackBtn">Оплатить ${selected} Max‑Vault</button>
-            <div id="payStatusLine" class="muted" style="font-size:13px; min-height:20px;"></div>
-          </div>
-          <div class="panel-card stack">
-            <div style="font-size:18px; font-weight:900;">Пакеты</div>
-            <div class="pack"><div><div class="title">100 Max‑Vault</div><div class="subtitle">Базовый пакет</div></div><div class="price">100 ₽</div></div>
-            <div class="pack"><div><div class="title">1000 Max‑Vault</div><div class="subtitle">Средний пакет</div></div><div class="price">1000 ₽</div></div>
-            <div class="pack"><div><div class="title">5000 Max‑Vault</div><div class="subtitle">Большой пакет</div></div><div class="price">5000 ₽</div></div>
-          </div>
-        </div>
-      `;
-      const line = document.getElementById('payStatusLine');
-      if (state.ui.payBusy) line.innerHTML = '<span style="display:inline-flex; gap:8px; align-items:center;"><span class="spinner"></span> Обработка...</span>';
-      if (state.ui.payDone) line.innerHTML = '<span style="display:inline-flex; gap:8px; align-items:center;"><span class="check">✓</span> Оплачено</span>';
-      document.getElementById('buyPackBtn').addEventListener('click', buySelectedPack);
-    }
-
-    function renderGiftsView() {
-      composerBlock.classList.add('hidden');
-      modelWrap.classList.add('hidden');
-      const gift = state.gifts.find(g => g.id === state.ui.selectedGiftId) || state.gifts[0];
-      paint(mainAvatar, gift.name, '');
-      mainName.textContent = gift.name;
-      mainDesc.textContent = `${gift.price} Max‑Vault • ${gift.note}`;
-      const options = state.chats.map(chat => `<option value="${chat.id}" ${state.ui.giftTargetId===chat.id?'selected':''}>${esc(chat.name)}</option>`).join('');
-      mainContent.innerHTML = `
-        <div class="stack" style="max-width:760px;">
-          <div class="panel-card">
-            <div style="display:flex; gap:14px; align-items:center;">
-              <div class="gift-art" style="width:68px; height:68px; border-radius:20px; font-size:32px;">${gift.icon}</div>
-              <div>
-                <div style="font-size:28px; font-weight:900; letter-spacing:-.04em;">${esc(gift.name)}</div>
-                <div class="muted" style="margin-top:6px;">${gift.note}</div>
-                <div class="gift-price" style="margin-top:8px;">${gift.price} Max‑Vault</div>
-              </div>
-            </div>
-          </div>
-          <div class="panel-card stack">
-            <div style="font-size:20px; font-weight:900;">Отправка подарка</div>
-            <label class="muted" style="font-size:13px;">Выбери чат</label>
-            <select id="giftTargetSelect">${options}</select>
-            <button class="btn" id="sendGiftBtn">Подарить</button>
-            <div class="notice">Подарок появляется в чате отдельной компактной карточкой.</div>
-          </div>
-          <div class="panel-card">
-            <div style="font-size:18px; font-weight:900; margin-bottom:10px;">Баланс</div>
-            <div class="wallet-balance"><span class="star">✦</span> ${state.wallet.balance}</div>
-          </div>
-        </div>
-      `;
-      document.getElementById('giftTargetSelect').addEventListener('change', e => { state.ui.giftTargetId = e.target.value; persist(); });
-      document.getElementById('sendGiftBtn').addEventListener('click', sendSelectedGift);
-    }
-
-    function sendMessage() {
-      const text = messageInput.value.trim();
-      if (!text) return;
-      const chat = getActiveChat();
-      if (!chat) return;
-      addTextMessage(chat.id, text, 'out');
-      messageInput.value = '';
-      renderMain();
-
-      if (chat.ai) {
-        setTimeout(() => {
-          const reply = 'sorry your country not support AI please do not use VPN/proxy or try again later (Error871). try bot @maxAi_bot qwen 2.1';
-          addTextMessage(chat.id, reply, 'in', 'Gemini x ChatGPT');
-          renderMain();
-        }, 350);
-      } else if (text.startsWith('/')) {
-        setTimeout(() => {
-          addTextMessage(chat.id, handleCommand(text), 'in', chat.name);
-          renderMain();
-        }, 280);
-      }
-    }
-
-    function handleCommand(text) {
-      const cmd = text.toLowerCase().trim();
-      if (cmd === '/start') return 'Бот запущен. Напиши /help, /menu, /ping или /profile';
-      if (cmd === '/help') return 'Доступно: /start, /help, /menu, /ping, /profile';
-      if (cmd === '/menu') return 'Меню: 1) Чаты 2) Контакты 3) Max‑Vault 4) Подарки';
-      if (cmd === '/ping') return 'pong';
-      if (cmd === '/profile') return `${state.profile.name} • ${state.profile.username}
-${state.profile.bio}`;
-      return 'Команда не найдена.';
-    }
-
-    function clearCurrent() {
-      if (state.ui.view !== 'chats') return;
-      const chat = getActiveChat();
-      if (!chat) return;
-      chat.messages = [{ id: uid(), kind: 'text', direction: 'in', from: 'system', text: 'Чат очищен.', time: fmt() }];
-      persist();
-      renderMain();
-    }
-
-    function addTextMessage(chatId, text, direction, fromName) {
-      const chat = state.chats.find(c => c.id === chatId);
-      if (!chat) return;
-      chat.messages.push({ id: uid(), kind: 'text', direction, from: direction==='out' ? 'Вы' : (fromName || chat.name), text, time: fmt() });
-      persist();
-    }
-
-    function addGiftMessage(chatId, gift) {
-      const chat = state.chats.find(c => c.id === chatId);
-      if (!chat) return;
-      chat.messages.push({
-        id: uid(), kind: 'gift', direction: 'out', from: 'Вы', time: fmt(),
-        giftName: gift.name, giftIcon: gift.icon, giftPrice: gift.price
-      });
-      persist();
-    }
-
-    function buySelectedPack() {
-      if (state.ui.payBusy) return;
-      state.ui.payBusy = true;
-      state.ui.payDone = false;
-      persist();
-      renderMain();
-      setTimeout(() => {
-        state.wallet.balance += state.wallet.selectedPack;
-        state.ui.payBusy = false;
-        state.ui.payDone = true;
-        persist();
-        renderAll();
-      }, 5000);
-    }
-
-    function sendSelectedGift() {
-      const gift = state.gifts.find(g => g.id === state.ui.selectedGiftId) || state.gifts[0];
-      const targetId = state.ui.giftTargetId || state.chats[0]?.id;
-      if (!gift || !targetId) return;
-      if (state.wallet.balance < gift.price) return toast('Недостаточно Max‑Vault.');
-      state.wallet.balance -= gift.price;
-      addGiftMessage(targetId, gift);
-      state.ui.activeChatId = targetId;
-      state.ui.view = 'chats';
-      persist();
-      renderAll();
-    }
-
-    function renderProfile() {
-      const p = state.profile;
-      paint(profileAvatar, p.name, p.avatar);
-      profileName.textContent = p.name;
-      profileUsername.textContent = p.username;
-      profileBio.textContent = p.bio || 'Без описания';
-      profileNameInput.value = p.name;
-      profileUsernameInput.value = p.username;
-      profileBioInput.value = p.bio || '';
-    }
-
-    function renderStats() {
-      statChats.textContent = state.chats.length;
-      statContacts.textContent = state.contacts.length;
-      statVault.textContent = state.wallet.balance;
-    }
-
-    function saveProfile() {
-      state.profile.name = profileNameInput.value.trim() || state.profile.name;
-      const u = profileUsernameInput.value.trim();
-      state.profile.username = u ? (u.startsWith('@') ? u : '@' + u) : state.profile.username;
-      state.profile.bio = profileBioInput.value.trim();
-      if (pendingProfileAvatar) state.profile.avatar = pendingProfileAvatar;
-      persist();
-      renderProfile();
-      toast('Профиль сохранён.');
-    }
-
-    function handleSecondaryAction() {
-      if (state.ui.view === 'contacts') return openModal('contact');
-      if (state.ui.view === 'chats') return openModal('chat');
-      if (state.ui.view === 'wallet') return buySelectedPack();
-      if (state.ui.view === 'gifts') return sendSelectedGift();
-    }
-
-    function openModal(mode) {
-      modalMode = mode;
-      modalBg.classList.remove('hidden');
-      if (mode === 'contact') {
-        modalTitle.textContent = 'Новый контакт';
-        modalText.textContent = 'Добавь имя, юзернейм и описание.';
-        modalFields.innerHTML = `
-          <input id="mName" placeholder="Имя" />
-          <input id="mUser" placeholder="@username" />
-          <textarea id="mBio" placeholder="Описание"></textarea>
-        `;
-      } else {
-        modalTitle.textContent = 'Новый диалог';
-        modalText.textContent = 'Чат, группа, канал или бот.';
-        modalFields.innerHTML = `
-          <select id="mType">
-            <option value="chat">Чат</option>
-            <option value="group">Группа</option>
-            <option value="channel">Канал</option>
-            <option value="bot">Бот</option>
-          </select>
-          <input id="mName" placeholder="Название" />
-          <textarea id="mBio" placeholder="Описание"></textarea>
-        `;
-      }
-    }
-
-    function closeModal() {
-      modalBg.classList.add('hidden');
-      modalMode = null;
-    }
-
-    function submitModal() {
-      if (modalMode === 'contact') {
-        const name = document.getElementById('mName').value.trim();
-        const usernameRaw = document.getElementById('mUser').value.trim();
-        const bio = document.getElementById('mBio').value.trim();
-        if (!name || !usernameRaw) return toast('Заполни имя и юзернейм.');
-        const username = usernameRaw.startsWith('@') ? usernameRaw : '@' + usernameRaw;
-        const c = { id: uid('contact'), name, username, bio: bio || 'Новый контакт', avatar: '' };
-        state.contacts.unshift(c);
-        state.ui.activeContactId = c.id;
-        persist();
-        closeModal();
-        renderAll();
-      } else {
-        const type = document.getElementById('mType').value;
-        const name = document.getElementById('mName').value.trim();
-        const bio = document.getElementById('mBio').value.trim();
-        if (!name) return toast('Введи название.');
-        const chat = {
-          id: uid('chat'), type, name, description: bio || defaultDesc(type), avatar: '', ai: false,
-          messages: [{ id: uid(), kind: 'text', direction: 'in', from: name, text: `Диалог «${name}» создан.`, time: fmt() }]
+        window.openModal1 = function() {
+            document.getElementById('modal1').style.display = 'flex';
         };
-        state.chats.unshift(chat);
-        state.ui.activeChatId = chat.id;
-        persist();
-        closeModal();
-        renderAll();
-      }
-    }
 
-    function defaultDesc(type) {
-      if (type === 'chat') return 'Новый чат';
-      if (type === 'group') return 'Новая группа';
-      if (type === 'channel') return 'Новый канал';
-      return 'Новый бот';
-    }
-
-    function openChatFromContact(contact, switchView = true) {
-      let chat = state.chats.find(c => c.type === 'chat' && c.name === contact.name);
-      if (!chat) {
-        chat = {
-          id: uid('chat'), type: 'chat', name: contact.name, description: `${contact.username} • ${contact.bio}`, avatar: contact.avatar, ai: false,
-          messages: [{ id: uid(), kind: 'text', direction: 'in', from: contact.name, text: `Привет, это чат с ${contact.name}.`, time: fmt() }]
+        window.goToTelegram = function() {
+            window.open('https://web.telegram.org', '_blank'); 
         };
-        state.chats.unshift(chat);
-      }
-      state.ui.activeChatId = chat.id;
-      if (switchView) state.ui.view = 'chats';
-      persist();
-      renderAll();
-      return chat.id;
-    }
+    </script>
 
-    function getActiveChat() {
-      return state.chats.find(c => c.id === state.ui.activeChatId) || state.chats[0];
-    }
-
-    function ensureRefs() {
-      if (!state.chats.some(c => c.id === state.ui.activeChatId)) state.ui.activeChatId = state.chats[0]?.id || null;
-      if (!state.contacts.some(c => c.id === state.ui.activeContactId)) state.ui.activeContactId = state.contacts[0]?.id || null;
-      if (!state.gifts.some(g => g.id === state.ui.selectedGiftId)) state.ui.selectedGiftId = state.gifts[0]?.id || null;
-      if (!state.chats.some(c => c.id === state.ui.giftTargetId)) state.ui.giftTargetId = state.chats[0]?.id || null;
-    }
-
-    function paint(el, name, avatar) {
-      el.textContent = initials(name);
-      el.style.backgroundImage = avatar ? `url(${avatar})` : 'linear-gradient(135deg, rgba(98,212,255,.92), rgba(143,123,255,.95))';
-      el.style.backgroundSize = 'cover';
-      el.style.backgroundPosition = 'center';
-    }
-    function avatarStyle(avatar) {
-      return avatar ? `background-image:url(${avatar}); background-size:cover; background-position:center; color:transparent;` : '';
-    }
-    function lastText(chat) {
-      const last = chat.messages.at(-1);
-      if (!last) return 'Пусто';
-      return last.kind === 'gift' ? `🎁 ${last.giftName}` : last.text.slice(0, 44);
-    }
-    function labelType(type) {
-      return ({ chat:'чат', group:'группа', channel:'канал', bot:'бот', favorites:'избранное' })[type] || type;
-    }
-    function setStatus(text) { authStatus.textContent = text; }
-    function toast(text) {
-      authStatus.textContent = text;
-      setTimeout(() => { if (authStatus.textContent === text) authStatus.textContent = ''; }, 2200);
-    }
-    function initials(name='') { return (name.trim()[0] || 'U').toUpperCase(); }
-    function uid(prefix='id') { return prefix + '-' + Math.random().toString(36).slice(2,9); }
-    function fmt(offset=0) { return new Date(Date.now() + offset * 60000).toLocaleTimeString('ru-RU', { hour:'2-digit', minute:'2-digit' }); }
-    function esc(s='') { return String(s).replaceAll('&','&amp;').replaceAll('<','&lt;').replaceAll('>','&gt;').replaceAll('"','&quot;').replaceAll("'", '&#039;'); }
-    async function fileToDataUrl(file) {
-      if (!file) return null;
-      return new Promise(resolve => {
-        const r = new FileReader();
-        r.onload = () => resolve(r.result);
-        r.readAsDataURL(file);
-      });
-    }
-    function persist() { localStorage.setItem(STORAGE_KEY, JSON.stringify(state)); }
-    function loadState() {
-      try {
-        const raw = localStorage.getItem(STORAGE_KEY);
-        if (!raw) return structuredClone(defaultState);
-        const saved = JSON.parse(raw);
-        return {
-          ...structuredClone(defaultState),
-          ...saved,
-          session: { ...structuredClone(defaultState).session, ...(saved.session || {}) },
-          ui: { ...structuredClone(defaultState).ui, ...(saved.ui || {}) },
-          profile: { ...structuredClone(defaultState).profile, ...(saved.profile || {}) },
-          wallet: { ...structuredClone(defaultState).wallet, ...(saved.wallet || {}) },
-          contacts: Array.isArray(saved.contacts) && saved.contacts.length ? saved.contacts : structuredClone(defaultState).contacts,
-          gifts: Array.isArray(saved.gifts) && saved.gifts.length ? saved.gifts : structuredClone(defaultState).gifts,
-          chats: Array.isArray(saved.chats) && saved.chats.length ? saved.chats : structuredClone(defaultState).chats
-        };
-      } catch {
-        return structuredClone(defaultState);
-      }
-    }
-  </script>
 </body>
 </html>
