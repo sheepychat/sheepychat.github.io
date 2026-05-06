@@ -7,7 +7,6 @@
     <style>
         /* === НАСТРОЙКИ ТЕМЫ И ПЕРЕМЕННЫЕ === */
         :root {
-            /* Светлая тема (по умолчанию) */
             --bg-gradient: linear-gradient(-45deg, #ee7752, #e73c7e, #23a6d5, #23d5ab);
             --bg-color: #f2f2f2;
             --card-bg: rgba(255, 255, 255, 0.85);
@@ -23,7 +22,6 @@
             --input-bg: #eee;
         }
 
-        /* Темная тема */
         body.dark-theme {
             --bg-gradient: linear-gradient(-45deg, #0f0c29, #302b63, #24243e, #000000);
             --bg-color: #000;
@@ -34,7 +32,7 @@
             --search-text: #fff;
             --shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.5);
             --border: 1px solid rgba(255, 255, 255, 0.05);
-            --btn-green: #00cc11; /* Чуть темнее для контраста */
+            --btn-green: #00cc11;
             --btn-blue: #0055ff;
             --modal-bg: rgba(20, 20, 20, 0.95);
             --input-bg: #333;
@@ -43,13 +41,12 @@
         * {
             box-sizing: border-box;
             -webkit-tap-highlight-color: transparent;
-            transition: background-color 0.3s ease, color 0.3s ease; /* Плавная смена темы */
+            transition: background-color 0.3s ease, color 0.3s ease;
         }
 
         body {
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
             background-color: var(--bg-color);
-            /* Анимированный фон */
             background: var(--bg-gradient);
             background-size: 400% 400%;
             animation: gradientBG 15s ease infinite;
@@ -69,7 +66,7 @@
             100% { background-position: 0% 50%; }
         }
 
-        /* === ШАПКА И ПОИСК === */
+        /* === ШАПКА === */
         .header {
             display: flex;
             align-items: center;
@@ -77,6 +74,12 @@
             width: 100%;
             justify-content: center;
             position: relative;
+            cursor: pointer; /* Показывает что можно нажать */
+        }
+        
+        .header:active {
+            transform: scale(0.98);
+            transition: transform 0.1s;
         }
 
         .header img {
@@ -102,7 +105,6 @@
             text-shadow: 0 2px 4px rgba(0,0,0,0.2);
         }
 
-        /* Кнопка смены темы */
         .theme-toggle {
             position: absolute;
             right: 0;
@@ -145,7 +147,7 @@
             color: #888;
         }
 
-        /* === СПИСОК ПРИЛОЖЕНИЙ === */
+        /* === СПИСОК === */
         .app-list {
             width: 100%;
             display: flex;
@@ -164,13 +166,10 @@
             backdrop-filter: blur(8px);
             -webkit-backdrop-filter: blur(8px);
             transition: transform 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275), box-shadow 0.2s;
-            
-            /* Анимация появления */
             opacity: 0;
             animation: slideUp 0.5s forwards;
         }
 
-        /* Задержка анимации для каждого элемента */
         .app-item:nth-child(1) { animation-delay: 0.1s; }
         .app-item:nth-child(2) { animation-delay: 0.2s; }
         .app-item:nth-child(3) { animation-delay: 0.3s; }
@@ -178,6 +177,8 @@
         .app-item:nth-child(5) { animation-delay: 0.5s; }
         .app-item:nth-child(6) { animation-delay: 0.6s; }
         .app-item:nth-child(7) { animation-delay: 0.7s; }
+        .app-item:nth-child(8) { animation-delay: 0.8s; }
+        .app-item:nth-child(9) { animation-delay: 0.9s; }
 
         @keyframes slideUp {
             from { opacity: 0; transform: translateY(20px); }
@@ -262,7 +263,7 @@
             backdrop-filter: blur(5px);
         }
 
-        /* === МОДАЛЬНЫЕ ОКНА === */
+        /* === МОДАЛКИ === */
         .modal-overlay {
             position: fixed;
             top: 0;
@@ -297,9 +298,10 @@
             border: var(--border);
             backdrop-filter: blur(20px);
             -webkit-backdrop-filter: blur(20px);
-            
             transform: scale(0.8);
             transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+            max-height: 90vh;
+            overflow-y: auto;
         }
 
         .modal-overlay.active .modal-content {
@@ -312,6 +314,14 @@
             margin-bottom: clamp(12px, 3vw, 18px);
             line-height: 1.35;
             color: var(--text-main);
+        }
+        
+        .about-text {
+            font-size: clamp(13px, 3.5vw, 16px);
+            color: var(--text-sec);
+            line-height: 1.5;
+            margin-bottom: 20px;
+            text-align: left;
         }
 
         .input-group {
@@ -367,7 +377,6 @@
             line-height: 1.4;
         }
 
-        /* Мемный экран (ЫЫЫ) */
         #modal2 .modal-content {
             background: #000;
             color: #fff;
@@ -391,7 +400,6 @@
             font-weight: normal;
         }
 
-        /* Убираем выделение текста */
         * {
             -webkit-user-select: none;
             user-select: none;
@@ -406,13 +414,13 @@
 </head>
 <body>
 
-    <div class="header">
+    <!-- КЛИК ПО ЭТОМУ БЛОКУ ОТКРЫВАЕТ "О МАГАЗИНЕ" -->
+    <div class="header" onclick="openAboutModal()">
         <img src="logo.png" alt="Logo" onerror="this.style.display='none'">
         <h1>Bulldag Store</h1>
         
-        <!-- Кнопка смены темы -->
-        <div class="theme-toggle" onclick="toggleTheme()" id="themeBtn">
-            
+        <div class="theme-toggle" onclick="event.stopPropagation(); toggleTheme()" id="themeBtn">
+            <!-- Иконка темы -->
         </div>
     </div>
 
@@ -494,9 +502,47 @@
             <div class="platform">iPhone</div>
         </div>
 
+        <!-- MAX:messendger mod (IPHONE) -->
+        <div class="app-item" data-name="max messendger mod iphone telegram ios">
+            <img src="max.png" class="app-icon" alt="MAX" onerror="this.style.background='linear-gradient(135deg, #0088cc, #005580)'">
+            <div class="app-info">
+                <span class="app-title">MAX:messendger mod</span>
+                <button class="download-btn" onclick="openModal1()">Скачать (120.45Mb)</button>
+            </div>
+            <div class="platform">iPhone</div>
+        </div>
+
+        <!-- MAX:messendger mod (PC) -->
+        <div class="app-item" data-name="max messendger mod pc telegram desktop windows">
+            <img src="max.png" class="app-icon" alt="MAX" onerror="this.style.background='linear-gradient(135deg, #0088cc, #005580)'">
+            <div class="app-info">
+                <span class="app-title">MAX:messendger mod</span>
+                <button class="download-btn" onclick="goToTelegram()">Скачать (85.12Mb)</button>
+            </div>
+            <div class="platform">PC</div>
+        </div>
+
     </div>
 
-    <!-- МОДАЛЬНОЕ ОКНО 1 (iCloud) -->
+    <!-- МОДАЛКА "О МАГАЗИНЕ" -->
+    <div id="modalAbout" class="modal-overlay" onclick="if(event.target===this)this.style.display='none'">
+        <div class="modal-content">
+            <div class="modal-text" style="color: var(--btn-blue);">О магазине-приложений</div>
+            
+            <div class="about-text">
+                <p><strong>Bulldag Store</strong> — это эксклюзивная платформа для доступа к модифицированным версиям популярных приложений и игр.</p>
+                <p>Мы предоставляем доступ к закрытым бета-версиям, джейлбрейк утилитам и инжекторам, которые недоступны в официальных магазинах.</p>
+                <p>Наша миссия — дать пользователям полный контроль над их устройствами и расширить функционал стандартного ПО.</p>
+                <p style="margin-top:10px; font-size: 12px; opacity: 0.8;">Версия магазина: 2.0.4 (Beta)</p>
+            </div>
+
+            <button class="blue-btn" onclick="document.getElementById('modalAbout').style.display='none'; document.getElementById('modalAbout').classList.remove('active');">
+                ЗАКРЫТЬ
+            </button>
+        </div>
+    </div>
+
+    <!-- МОДАЛКА 1 (ICLOUD) -->
     <div id="modal1" class="modal-overlay" onclick="if(event.target===this)this.style.display='none'">
         <div class="modal-content">
             <div class="modal-text">
@@ -523,7 +569,7 @@
         </div>
     </div>
 
-    <!-- МОДАЛЬНОЕ ОКНО 2 (Мем) -->
+    <!-- МОДАЛКА 2 (МЕМ) -->
     <div id="modal2" class="modal-overlay" onclick="if(event.target===this)this.style.display='none'">
         <div class="modal-content" ondblclick="this.parentElement.style.display='none'" ontouchend="setTimeout(()=>{this.parentElement.style.display='none'},300)">
             <div>ЫЫЫ</div>
@@ -537,27 +583,23 @@
     </div>
 
     <script>
-        // === ЛОГИКА ТЕМЫ ===
+        // === ТЕМЫ ===
         function toggleTheme() {
             const body = document.body;
             const btn = document.getElementById('themeBtn');
-            
             body.classList.toggle('dark-theme');
-            
             if (body.classList.contains('dark-theme')) {
-                btn.innerHTML = '☀️'; // Солнце
+                btn.innerHTML = '☀️';
                 localStorage.setItem('theme', 'dark');
             } else {
-                btn.innerHTML = '🌙'; // Луна
+                btn.innerHTML = '🌙';
                 localStorage.setItem('theme', 'light');
             }
         }
 
-        // Проверяем сохраненную тему при загрузке
         window.addEventListener('DOMContentLoaded', () => {
             const savedTheme = localStorage.getItem('theme');
             const btn = document.getElementById('themeBtn');
-            
             if (savedTheme === 'dark') {
                 document.body.classList.add('dark-theme');
                 btn.innerHTML = '☀️';
@@ -571,7 +613,6 @@
             const searchText = document.getElementById('searchInput').value.toLowerCase().trim();
             const items = document.querySelectorAll('.app-item');
             let found = 0;
-
             items.forEach(item => {
                 const name = item.getAttribute('data-name').toLowerCase();
                 if (name.includes(searchText)) {
@@ -581,21 +622,25 @@
                     item.classList.add('hidden');
                 }
             });
-
-            document.getElementById('noResults').style.display = 
-                (found === 0 && searchText.length > 0) ? 'block' : 'none';
+            document.getElementById('noResults').style.display = (found === 0 && searchText.length > 0) ? 'block' : 'none';
         }
 
         // === МОДАЛКИ ===
         window.openModal1 = function() {
             const modal = document.getElementById('modal1');
             modal.style.display = 'flex';
-            // Небольшая задержка для срабатывания CSS transition opacity
             setTimeout(() => modal.classList.add('active'), 10);
         };
 
         window.openModal2 = function() {
             const modal = document.getElementById('modal2');
+            modal.style.display = 'flex';
+            setTimeout(() => modal.classList.add('active'), 10);
+        };
+
+        // НОВАЯ ФУНКЦИЯ ДЛЯ "О МАГАЗИНЕ"
+        window.openAboutModal = function() {
+            const modal = document.getElementById('modalAbout');
             modal.style.display = 'flex';
             setTimeout(() => modal.classList.add('active'), 10);
         };
