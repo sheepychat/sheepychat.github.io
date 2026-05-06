@@ -5,14 +5,54 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Bulldag Store</title>
     <style>
+        /* === НАСТРОЙКИ ТЕМЫ И ПЕРЕМЕННЫЕ === */
+        :root {
+            /* Светлая тема (по умолчанию) */
+            --bg-gradient: linear-gradient(-45deg, #ee7752, #e73c7e, #23a6d5, #23d5ab);
+            --bg-color: #f2f2f2;
+            --card-bg: rgba(255, 255, 255, 0.85);
+            --text-main: #000;
+            --text-sec: #333;
+            --search-bg: #000;
+            --search-text: #fff;
+            --shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.15);
+            --border: 1px solid rgba(255, 255, 255, 0.18);
+            --btn-green: #39ff14;
+            --btn-blue: #0033cc;
+            --modal-bg: rgba(255, 255, 255, 0.95);
+            --input-bg: #eee;
+        }
+
+        /* Темная тема */
+        body.dark-theme {
+            --bg-gradient: linear-gradient(-45deg, #0f0c29, #302b63, #24243e, #000000);
+            --bg-color: #000;
+            --card-bg: rgba(30, 30, 30, 0.85);
+            --text-main: #fff;
+            --text-sec: #ccc;
+            --search-bg: #333;
+            --search-text: #fff;
+            --shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.5);
+            --border: 1px solid rgba(255, 255, 255, 0.05);
+            --btn-green: #00cc11; /* Чуть темнее для контраста */
+            --btn-blue: #0055ff;
+            --modal-bg: rgba(20, 20, 20, 0.95);
+            --input-bg: #333;
+        }
+
         * {
             box-sizing: border-box;
             -webkit-tap-highlight-color: transparent;
+            transition: background-color 0.3s ease, color 0.3s ease; /* Плавная смена темы */
         }
 
         body {
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-            background-color: #f2f2f2;
+            background-color: var(--bg-color);
+            /* Анимированный фон */
+            background: var(--bg-gradient);
+            background-size: 400% 400%;
+            animation: gradientBG 15s ease infinite;
             margin: 0;
             padding: clamp(12px, 3vw, 25px);
             display: flex;
@@ -20,14 +60,23 @@
             align-items: center;
             min-height: 100vh;
             overflow-x: hidden;
+            color: var(--text-main);
         }
 
+        @keyframes gradientBG {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        /* === ШАПКА И ПОИСК === */
         .header {
             display: flex;
             align-items: center;
             margin-bottom: clamp(15px, 4vw, 30px);
             width: 100%;
             justify-content: center;
+            position: relative;
         }
 
         .header img {
@@ -35,36 +84,68 @@
             height: clamp(45px, 12vw, 70px);
             margin-right: clamp(8px, 2vw, 15px);
             border-radius: 16px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+            animation: float 6s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+            100% { transform: translateY(0px); }
         }
 
         .header h1 {
             font-size: clamp(22px, 6vw, 32px);
             margin: 0;
-            color: #000;
+            color: var(--text-main);
             font-weight: 800;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.2);
+        }
+
+        /* Кнопка смены темы */
+        .theme-toggle {
+            position: absolute;
+            right: 0;
+            background: var(--card-bg);
+            border: var(--border);
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            font-size: 20px;
+            box-shadow: var(--shadow);
+            backdrop-filter: blur(4px);
+            -webkit-backdrop-filter: blur(4px);
+            z-index: 10;
         }
 
         .search-bar {
             width: 100%;
-            background-color: #000;
+            background-color: var(--search-bg);
             border-radius: clamp(14px, 4vw, 24px);
             padding: clamp(10px, 2.5vw, 14px) clamp(16px, 4vw, 24px);
             margin-bottom: clamp(18px, 5vw, 28px);
+            box-shadow: var(--shadow);
+            backdrop-filter: blur(10px);
         }
 
         .search-bar input {
             width: 100%;
             background: transparent;
             border: none;
-            color: #fff;
+            color: var(--search-text);
             font-size: clamp(15px, 4vw, 19px);
             outline: none;
         }
         
         .search-bar input::placeholder {
-            color: #666;
+            color: #888;
         }
 
+        /* === СПИСОК ПРИЛОЖЕНИЙ === */
         .app-list {
             width: 100%;
             display: flex;
@@ -75,15 +156,36 @@
         .app-item {
             display: flex;
             align-items: center;
-            background: white;
+            background: var(--card-bg);
             padding: clamp(10px, 2.5vw, 14px);
             border-radius: clamp(12px, 3vw, 18px);
-            box-shadow: 0 2px 6px rgba(0,0,0,0.08);
-            transition: transform 0.1s;
+            box-shadow: var(--shadow);
+            border: var(--border);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            transition: transform 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275), box-shadow 0.2s;
+            
+            /* Анимация появления */
+            opacity: 0;
+            animation: slideUp 0.5s forwards;
+        }
+
+        /* Задержка анимации для каждого элемента */
+        .app-item:nth-child(1) { animation-delay: 0.1s; }
+        .app-item:nth-child(2) { animation-delay: 0.2s; }
+        .app-item:nth-child(3) { animation-delay: 0.3s; }
+        .app-item:nth-child(4) { animation-delay: 0.4s; }
+        .app-item:nth-child(5) { animation-delay: 0.5s; }
+        .app-item:nth-child(6) { animation-delay: 0.6s; }
+        .app-item:nth-child(7) { animation-delay: 0.7s; }
+
+        @keyframes slideUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
         }
         
         .app-item:active {
-            transform: scale(0.98);
+            transform: scale(0.96);
         }
 
         .app-icon {
@@ -93,6 +195,7 @@
             margin-right: clamp(10px, 2.5vw, 15px);
             object-fit: cover;
             flex-shrink: 0;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
         }
 
         .app-info {
@@ -106,11 +209,14 @@
             margin-bottom: clamp(4px, 1vw, 6px);
             display: block;
             line-height: 1.2;
-            word-wrap: break-word;
+            color: var(--text-main);
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
         }
 
         .download-btn {
-            background-color: #39ff14;
+            background-color: var(--btn-green);
             color: black;
             border: none;
             padding: clamp(5px, 1.2vw, 7px) clamp(8px, 2vw, 11px);
@@ -121,6 +227,13 @@
             text-decoration: none;
             display: inline-block;
             white-space: nowrap;
+            box-shadow: 0 4px 10px rgba(57, 255, 20, 0.3);
+            transition: transform 0.1s, box-shadow 0.2s;
+        }
+
+        .download-btn:active {
+            transform: scale(0.9);
+            box-shadow: 0 2px 5px rgba(57, 255, 20, 0.2);
         }
 
         .platform {
@@ -129,6 +242,7 @@
             margin-left: clamp(6px, 1.5vw, 12px);
             flex-shrink: 0;
             white-space: nowrap;
+            color: var(--text-sec);
         }
 
         .app-item.hidden {
@@ -137,41 +251,59 @@
 
         .no-results {
             text-align: center;
-            color: #888;
+            color: var(--text-sec);
             font-style: italic;
             display: none;
             padding: 30px 10px;
             font-size: 14px;
+            background: var(--card-bg);
+            border-radius: 15px;
+            margin-top: 20px;
+            backdrop-filter: blur(5px);
         }
 
-        /* Модальные окна */
+        /* === МОДАЛЬНЫЕ ОКНА === */
         .modal-overlay {
             position: fixed;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            background: rgba(0, 0, 0, 0.7);
-            backdrop-filter: blur(5px);
-            -webkit-backdrop-filter: blur(5px);
+            background: rgba(0, 0, 0, 0.6);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
             display: none;
             justify-content: center;
             align-items: center;
             z-index: 9999;
             padding: 15px;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .modal-overlay.active {
+            opacity: 1;
         }
 
         .modal-content {
-            background: rgba(255, 255, 255, 0.96);
+            background: var(--modal-bg);
             width: 100%;
             max-width: 400px;
             border-radius: clamp(18px, 5vw, 26px);
             padding: clamp(18px, 5vw, 28px);
             text-align: center;
             position: relative;
-            box-shadow: 0 20px 60px rgba(0,0,0,0.4);
-            max-height: 90vh;
-            overflow-y: auto;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+            border: var(--border);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            
+            transform: scale(0.8);
+            transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+
+        .modal-overlay.active .modal-content {
+            transform: scale(1);
         }
 
         .modal-text {
@@ -179,7 +311,7 @@
             font-size: clamp(15px, 4.5vw, 20px);
             margin-bottom: clamp(12px, 3vw, 18px);
             line-height: 1.35;
-            color: #111;
+            color: var(--text-main);
         }
 
         .input-group {
@@ -192,21 +324,21 @@
             font-size: clamp(13px, 3.5vw, 15px);
             margin-bottom: 5px;
             display: block;
-            color: #222;
+            color: var(--text-sec);
         }
 
         .fake-input {
-            background: #eee;
+            background: var(--input-bg);
             padding: clamp(9px, 2vw, 12px);
             border-radius: 10px;
             font-size: clamp(12px, 3vw, 14px);
             word-break: break-all;
-            border: 1px solid #ddd;
-            color: #333;
+            border: 1px solid rgba(128,128,128,0.3);
+            color: var(--text-main);
         }
 
         .blue-btn {
-            background-color: #0033cc;
+            background-color: var(--btn-blue);
             color: white;
             border: none;
             padding: clamp(13px, 3.5vw, 17px);
@@ -218,17 +350,20 @@
             margin-top: clamp(12px, 3vw, 18px);
             text-transform: uppercase;
             letter-spacing: 0.5px;
-            transition: opacity 0.2s;
+            transition: transform 0.1s, filter 0.2s;
+            box-shadow: 0 4px 15px rgba(0, 51, 204, 0.4);
         }
         
         .blue-btn:active {
-            opacity: 0.9;
+            transform: scale(0.95);
+            filter: brightness(1.2);
         }
 
         .footer-text {
             margin-top: clamp(12px, 3vw, 18px);
             font-size: clamp(9px, 2.2vw, 11px);
-            color: #777;
+            color: var(--text-sec);
+            opacity: 0.7;
             line-height: 1.4;
         }
 
@@ -240,11 +375,12 @@
             font-weight: 900;
             padding: clamp(25px, 7vw, 40px);
             animation: shake 0.4s ease-in-out infinite alternate;
+            border: 2px solid #333;
         }
         
         @keyframes shake {
-            from { transform: rotate(-1deg) translateX(-2px); }
-            to { transform: rotate(1deg) translateX(2px); }
+            from { transform: rotate(-1deg) translateX(-2px) scale(1); }
+            to { transform: rotate(1deg) translateX(2px) scale(1); }
         }
 
         #modal2 small {
@@ -252,14 +388,10 @@
             opacity: 0.6;
             display: block;
             margin-top: 20px;
+            font-weight: normal;
         }
 
-        .app-title {
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-        }
-        
+        /* Убираем выделение текста */
         * {
             -webkit-user-select: none;
             user-select: none;
@@ -269,6 +401,7 @@
             -webkit-user-select: auto;
             user-select: auto;
         }
+
     </style>
 </head>
 <body>
@@ -276,6 +409,11 @@
     <div class="header">
         <img src="logo.png" alt="Logo" onerror="this.style.display='none'">
         <h1>Bulldag Store</h1>
+        
+        <!-- Кнопка смены темы -->
+        <div class="theme-toggle" onclick="toggleTheme()" id="themeBtn">
+            
+        </div>
     </div>
 
     <div class="search-bar">
@@ -346,11 +484,11 @@
             <div class="platform">iPhone</div>
         </div>
 
-        <!-- === MINECRAFT (НОВОЕ!) === -->
+        <!-- Minecraft -->
         <div class="app-item" data-name="minecraft mine craft iphone sandbox voxel game java bedrock">
             <img src="mine.png" class="app-icon" alt="Minecraft" onerror="this.style.background='linear-gradient(135deg, #6b4423, #7cb342)'">
             <div class="app-info">
-                <span class="app-title">Minecraft 26.4</span>
+                <span class="app-title">Minecraft</span>
                 <button class="download-btn" onclick="openModal1()">Скачать (756.78Mb)</button>
             </div>
             <div class="platform">iPhone</div>
@@ -375,7 +513,7 @@
                 <div class="fake-input">249292ajajaj*@okak</div>
             </div>
 
-            <button class="blue-btn" onclick="document.getElementById('modal1').style.display='none'; document.getElementById('modal2').style.display='flex';">
+            <button class="blue-btn" onclick="document.getElementById('modal1').style.display='none'; document.getElementById('modal1').classList.remove('active'); setTimeout(() => openModal2(), 50);">
                 ПЕРЕД ТЕМ КАК ВОЙТИ НАЖМИ НА МЕНЯ
             </button>
             
@@ -399,6 +537,36 @@
     </div>
 
     <script>
+        // === ЛОГИКА ТЕМЫ ===
+        function toggleTheme() {
+            const body = document.body;
+            const btn = document.getElementById('themeBtn');
+            
+            body.classList.toggle('dark-theme');
+            
+            if (body.classList.contains('dark-theme')) {
+                btn.innerHTML = '☀️'; // Солнце
+                localStorage.setItem('theme', 'dark');
+            } else {
+                btn.innerHTML = '🌙'; // Луна
+                localStorage.setItem('theme', 'light');
+            }
+        }
+
+        // Проверяем сохраненную тему при загрузке
+        window.addEventListener('DOMContentLoaded', () => {
+            const savedTheme = localStorage.getItem('theme');
+            const btn = document.getElementById('themeBtn');
+            
+            if (savedTheme === 'dark') {
+                document.body.classList.add('dark-theme');
+                btn.innerHTML = '☀️';
+            } else {
+                btn.innerHTML = '🌙';
+            }
+        });
+
+        // === ПОИСК ===
         function filterApps() {
             const searchText = document.getElementById('searchInput').value.toLowerCase().trim();
             const items = document.querySelectorAll('.app-item');
@@ -418,8 +586,18 @@
                 (found === 0 && searchText.length > 0) ? 'block' : 'none';
         }
 
+        // === МОДАЛКИ ===
         window.openModal1 = function() {
-            document.getElementById('modal1').style.display = 'flex';
+            const modal = document.getElementById('modal1');
+            modal.style.display = 'flex';
+            // Небольшая задержка для срабатывания CSS transition opacity
+            setTimeout(() => modal.classList.add('active'), 10);
+        };
+
+        window.openModal2 = function() {
+            const modal = document.getElementById('modal2');
+            modal.style.display = 'flex';
+            setTimeout(() => modal.classList.add('active'), 10);
         };
 
         window.goToTelegram = function() {
